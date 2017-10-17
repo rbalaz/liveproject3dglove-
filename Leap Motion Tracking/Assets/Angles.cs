@@ -39,7 +39,7 @@ public class Angles : MonoBehaviour {
         boneAngles.x = gameObject.transform.GetChild(0).transform.rotation.x;
         boneAngles.y = gameObject.transform.GetChild(0).transform.rotation.y;
         boneAngles.z = gameObject.transform.GetChild(0).transform.rotation.z;
-        Debug.Log(gameObject.transform.GetChild(0).name + "- X: " + boneAngles.x + " Y: " + boneAngles.y + " Z: " + boneAngles.z + ".");
+        //Debug.Log(gameObject.transform.GetChild(0).name + "- X: " + boneAngles.x + " Y: " + boneAngles.y + " Z: " + boneAngles.z + ".");
 
         //Log of finger rotation values
         var parent = gameObject.transform.parent;
@@ -56,8 +56,8 @@ public class Angles : MonoBehaviour {
             {
                 if (fingers[j] == name && shouldUpdate(name, angles))
                 {
-                    Debug.Log(name);
-                    Debug.Log("X: " + angles.x + " Y: " + angles.y + " Z: " + angles.z + ".");
+                    //Debug.Log(name);
+                    //Debug.Log("X: " + angles.x + " Y: " + angles.y + " Z: " + angles.z + ".");
                     break;
                 }
             }
