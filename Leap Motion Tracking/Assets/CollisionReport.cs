@@ -74,7 +74,6 @@ public class CollisionReport : MonoBehaviour
         string predecessor = identifyPredecessor(other);
         string finger = other.transform.parent.name;
         string hand = other.transform.parent.parent.name;
-        //logAllBonePositions(other);
         if (predecessor == "bone2")
         {
             Vector3 bone3 = other.transform.position;
@@ -82,13 +81,16 @@ public class CollisionReport : MonoBehaviour
             Vector3 contact = other.contacts[0].point;
             float boneDistance = getDistanceBetweenVectors(bone3, bone2);
             float contactDistance = getDistanceBetweenVectors(bone3, contact);
-            if (boneDistance > contactDistance)
+            if (intersectionHappened(other, bone3, bone2, contact, boneDistance) == true)
             {
-               Debug.Log("Hand: " + hand + " Finger: " + finger + " Bone: " + other.transform.name + " Intersection rate: " + 100 * contactDistance / boneDistance + "%.");
-            }
-            else
-            {
-               Debug.Log("Hand: " + hand + " Finger: " + finger + " Bone: " + other.transform.name + " Intersection rate: 100%");
+                if (boneDistance > contactDistance)
+                {
+                    Debug.Log("Hand: " + hand + " Finger: " + finger + " Bone: " + other.transform.name + " Intersection rate: " + 100 * (contactDistance / boneDistance) + "%.");
+                }
+                else
+                {
+                    Debug.Log("Hand: " + hand + " Finger: " + finger + " Bone: " + other.transform.name + " Intersection rate: 100%");
+                }
             }
         }
         else if (predecessor == "bone1")
@@ -98,18 +100,17 @@ public class CollisionReport : MonoBehaviour
             Vector3 contact = other.contacts[0].point;
             float boneDistance = getDistanceBetweenVectors(bone2, bone1);
             float contactDistance = getDistanceBetweenVectors(bone2, contact);
-            if (boneDistance > contactDistance)
+            if (intersectionHappened(other, bone2, bone1, contact, boneDistance) == true)
             {
-                Debug.Log("Hand: " + hand + " Finger: " + finger + " Bone: " + other.transform.name + " Intersection rate: " + 100 * contactDistance / boneDistance + "%.");
+                if (boneDistance > contactDistance)
+                {
+                    Debug.Log("Hand: " + hand + " Finger: " + finger + " Bone: " + other.transform.name + " Intersection rate: " + 100 * (contactDistance / boneDistance) + "%.");
+                }
+                else
+                {
+                    Debug.Log("Hand: " + hand + " Finger: " + finger + " Bone: " + other.transform.name + " Intersection rate: 100%");
+                }
             }
-            else
-            {
-                Debug.Log("Hand: " + hand + " Finger: " + finger + " Bone: " + other.transform.name + " Intersection rate: 100%");
-            }
-        }
-        else
-        {
-            Debug.Log("Hand: " + hand + " Finger: " + finger + " is fully inside the object.");
         }
     }
 
@@ -132,7 +133,14 @@ public class CollisionReport : MonoBehaviour
             return "bone1";
         return null;
     }
-    
+
+    bool intersectionHappened(Collision other, Vector3 farBone, Vector3 closeBone, Vector3 contact, float boneDistance)
+    {
+        float farContactDistance = getDistanceBetweenVectors(farBone, contact);
+        float closeContactDistance = getDistanceBetweenVectors(closeBone, contact);
+
+        return farContactDistance < boneDistance && closeContactDistance < boneDistance;
+    }
 
     float getDistanceBetweenVectors(Vector3 first, Vector3 second)
     {
