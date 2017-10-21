@@ -42,7 +42,7 @@ public class CollisionReport : MonoBehaviour
                 fingerPart = "Palm";
                 break;
         }
-        //Debug.Log("Collision detected: " + hand + "-" + finger + "-" + fingerPart + ".");
+        Debug.Log("Collision detected: " + hand + "-" + finger + "-" + fingerPart + ".");
     }
 
 
