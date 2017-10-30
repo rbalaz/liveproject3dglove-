@@ -27,27 +27,30 @@ public class Hand
 
     public void CollisionStay(Collision other)
     {
-        int childIndex = -1;
-        if (other.transform.name == "bone3")
-            childIndex = 1;
-        else if (other.transform.name == "bone2")
-            childIndex = 0;
-        else
-            return;
+        if (other.transform.name.Contains("bone"))
+        {
+            int childIndex = -1;
+            if (other.transform.name == "bone3")
+                childIndex = 1;
+            else if (other.transform.name == "bone2")
+                childIndex = 0;
+            else
+                return;
 
-        // Calculate intersection rate
-        Vector3 farBone = other.transform.position;
-        Vector3 closeBone = other.transform.parent.GetChild(childIndex).transform.position;
-        int rate = calculateRateOfIntersection(farBone, closeBone, other);
-        if (rate == -1)
-            return;
+            // Calculate intersection rate
+            Vector3 farBone = other.transform.position;
+            Vector3 closeBone = other.transform.parent.GetChild(childIndex).transform.position;
+            int rate = calculateRateOfIntersection(farBone, closeBone, other);
+            if (rate == -1)
+                return;
 
-        // Set slider value
-        string finger = other.transform.parent.name;
-        if (childIndex == 1)
-            slidersDict[finger].value = rate;
-        else
-            slidersDict[finger].value = 100+rate;
+            // Set slider value
+            string finger = other.transform.parent.name;
+            if (childIndex == 1)
+                slidersDict[finger].value = rate;
+            else
+                slidersDict[finger].value = 100 + rate;
+        }
     }
 
     public void CollisionExit(Collision other)
@@ -96,28 +99,34 @@ public class CollisionSliders : MonoBehaviour {
     }
 
     private void OnCollisionStay(Collision collision)
-    {
-        string hand = collision.transform.parent.parent.name;
-        if (hand == "RigidRoundHand_L")
+    {        
+        if (collision.transform.name.Contains("bone"))
         {
-            leftHand.CollisionStay(collision);
-        }
-        else if (hand == "RigidRoundHand_R")
-        {
-            rightHand.CollisionStay(collision);
+            string hand = collision.transform.parent.parent.name;
+            if (hand == "RigidRoundHand_L")
+            {
+                leftHand.CollisionStay(collision);
+            }
+            else if (hand == "RigidRoundHand_R")
+            {
+                rightHand.CollisionStay(collision);
+            }
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        string hand = collision.transform.parent.parent.name;
-        if (hand == "RigidRoundHand_L")
+        if (collision.transform.name.Contains("bone"))
         {
-            leftHand.CollisionExit(collision);
-        }
-        else if (hand == "RigidRoundHand_R")
-        {
-            rightHand.CollisionExit(collision);
+            string hand = collision.transform.parent.parent.name;
+            if (hand == "RigidRoundHand_L")
+            {
+                leftHand.CollisionExit(collision);
+            }
+            else if (hand == "RigidRoundHand_R")
+            {
+                rightHand.CollisionExit(collision);
+            }
         }
     }
 }
