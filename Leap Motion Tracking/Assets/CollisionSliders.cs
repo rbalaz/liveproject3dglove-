@@ -113,7 +113,7 @@ public class CollisionSliders : MonoBehaviour
                 if (hitInfo.collider == myCollider)
                 { 
                     if (hitInfo.distance < touchDistance)
-                        finger.slider.value = 1;
+                        finger.slider.value = ((touchDistance-hitInfo.distance)*120)/ touchDistance;
                     else
                         finger.slider.value = 0;
                 }
