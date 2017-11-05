@@ -39,22 +39,26 @@ public class Finger
 
 public class CollisionSliders : MonoBehaviour
 {
-
+    public float touchDistance;
     public Sliders leftHandSliders;
     public Sliders rightHandSliders;
 
     private List<Finger> leftHandFingers;
     private List<Finger> rightHandFingers;
 
+    private Collider myCollider;
+
     private int BONES_COUNT = 5;
     private string BASE_PATH_LEFT = "/LMHeadMountedRig/Interaction Manager/Left Interaction Hand Contact Bones/Contact Fingerbone ";
     private string BASE_PATH_RIGHT = "/LMHeadMountedRig/Interaction Manager/Right Interaction Hand Contact Bones/Contact Fingerbone ";
-    private string[] BONE_NAMES = new string[] { "(Thumb-Intermediate)", "(Index-Intermediate)", "(Middle-Intermediate)", "(Ring-Intermediate)", "(Pinky-Intermediate)" };
+    private string[] BONE_NAMES = new string[] { "(Thumb-Distal)", "(Index-Distal)", "(Middle-Distal)", "(Ring-Distal)", "(Pinky-Distal)" };
+
 
     void Start()
     {
         leftHandFingers = new List<Finger>();
         rightHandFingers = new List<Finger>();
+        myCollider = GetComponent<Collider>();
     }
 
     private void tryFindBones(string basePath)
@@ -75,21 +79,20 @@ public class CollisionSliders : MonoBehaviour
 
     private void Update()
     {
-        // !!!!!!  UpdateSliders mozno nie cez update ale cez OnHover() event
+        if (leftHandFingers.Count < BONES_COUNT) tryFindBones(BASE_PATH_LEFT);        
+        if (rightHandFingers.Count < BONES_COUNT) tryFindBones(BASE_PATH_RIGHT);
+    }
 
-        if (leftHandFingers.Count < BONES_COUNT)
-            tryFindBones(BASE_PATH_LEFT);
-        else
-            UpdateSliders(leftHandFingers);
-
-        if (rightHandFingers.Count < BONES_COUNT)
-            tryFindBones(BASE_PATH_RIGHT);
-        else
-            UpdateSliders(rightHandFingers);
+    public void HoverStay()
+    {
+        UpdateSliders(leftHandFingers);
+        UpdateSliders(rightHandFingers);
     }
 
     private void UpdateSliders(List<Finger> fingers)
     {
+        if (fingers.Count != BONES_COUNT) return;
+
         foreach (Finger finger in fingers)
         {
             /*
@@ -97,18 +100,35 @@ public class CollisionSliders : MonoBehaviour
             if (finger.distance < 0.3) finger.slider.value = 1;
             else finger.slider.value = 0;
             */
+            
 
-            // !!!!! este treba skusit ine moznosti hladania vzdialenosti (Linecast je pomaly, a tiez hitInfo.distance < ???)
+            RaycastHit[] hits;
+            Vector3 origin = finger.obj.transform.position;
+            hits = Physics.RaycastAll(origin, transform.position-origin, 100.0F);
 
+            foreach (RaycastHit hitInfo in hits)
+            {
+                if (finger.slider == rightHandSliders.sliderIndex) Debug.DrawRay(origin, transform.position - origin, Color.red, 1.0f);
+
+                if (hitInfo.collider == myCollider)
+                { 
+                    if (hitInfo.distance < touchDistance)
+                        finger.slider.value = 1;
+                    else
+                        finger.slider.value = 0;
+                }
+            }
+            /*
             RaycastHit hitInfo;
-            if (Physics.Linecast(transform.position, finger.obj.transform.position, out hitInfo))
-            { 
-                if (hitInfo.distance < (transform.lossyScale.x + transform.lossyScale.y + transform.lossyScale.z)/5)
+            if (Physics.Linecast(finger.obj.transform.position, , out hitInfo))
+            {
+                //if (finger.slider == leftHandSliders.sliderIndex) Debug.Log(hitInfo.distance);
+                if (hitInfo.collider == myCollider && hitInfo.distance < touchDistance)
                     finger.slider.value = 1;
                 else
                     finger.slider.value = 0;
             }
-
+            */
 
 
         }
