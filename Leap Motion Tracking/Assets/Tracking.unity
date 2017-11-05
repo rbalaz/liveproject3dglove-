@@ -6181,7 +6181,7 @@ MonoBehaviour:
         m_PersistentCalls:
           m_Calls:
           - m_Target: {fileID: 1987560163}
-            m_MethodName: HoverStay
+            m_MethodName: UpdateOnHover
             m_Mode: 1
             m_Arguments:
               m_ObjectArgument: {fileID: 0}
@@ -6198,7 +6198,7 @@ MonoBehaviour:
         m_PersistentCalls:
           m_Calls:
           - m_Target: {fileID: 1987560163}
-            m_MethodName: HoverStay
+            m_MethodName: UpdateOnHover
             m_Mode: 1
             m_Arguments:
               m_ObjectArgument: {fileID: 0}
