@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Leap.Unity.Interaction;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,6 +39,22 @@ public class Finger
     }
 }
 
+public class InteractibleObject
+{
+    public GameObject gameObject;
+    public Collider collider; // Collider of interactible objects (stored for performance reasons)
+
+    public InteractibleObject(CollisionSliders manager, InteractionBehaviour ib)
+    {
+        // Register events
+        ib.OnHoverEnd += (() => manager.UpdateOnHover(this));
+        ib.OnHoverStay += (() => manager.UpdateOnHover(this));
+        // Store gameObject and collider
+        gameObject = ib.gameObject;
+        collider = (ib.gameObject.GetComponent<Collider>());
+    }
+}
+
 public class CollisionSliders : MonoBehaviour
 {
     [Tooltip("Distance threshold to decide whether finger is touching the object")]
@@ -46,13 +63,16 @@ public class CollisionSliders : MonoBehaviour
     public Sliders leftHandSliders;
     [Tooltip("Sliders for right hand fingers")]
     public Sliders rightHandSliders;
+    [Tooltip("Objects for which touch force will be calculated (objects must have InteractionBehaviour script attached)")]
+    public List<InteractionBehaviour> interactibleObjects;
+
+    // List of interactible objects
+    private List<InteractibleObject> ilList;
+
 
     // Lists of left and right hand fingers
     private List<Finger> leftHandFingers;
     private List<Finger> rightHandFingers;
-
-    // Collider of the object the script is attached to
-    private Collider myCollider;
 
     // Constants used for finding fingers in the scene
     private int BONES_COUNT = 5;
@@ -66,20 +86,56 @@ public class CollisionSliders : MonoBehaviour
         // Initialize lists
         leftHandFingers = new List<Finger>();
         rightHandFingers = new List<Finger>();
-        // Store collider (performance reasons)
-        myCollider = GetComponent<Collider>();
+        ilList = new List<InteractibleObject>();
+
+        foreach (InteractionBehaviour ib in interactibleObjects)
+        {
+            Debug.Log(ib);
+            ilList.Add(new InteractibleObject(this, ib));
+        }
     }
 
-    private void Update()
+    private void Update() // Try to find fingers in scene
     {
         if (leftHandFingers.Count != BONES_COUNT) TryFindFingers(BASE_PATH_LEFT);
         if (rightHandFingers.Count != BONES_COUNT) TryFindFingers(BASE_PATH_RIGHT);
     }
 
-    public void UpdateOnHover() // Called during HoverStay() and HoverEnd() events by InteractionBehavior script
+    public void UpdateOnHover(InteractibleObject caller) // Called during HoverStay() and HoverEnd() events by InteractionBehavior script
     {
-        UpdateSliders(leftHandFingers);
-        UpdateSliders(rightHandFingers);
+        UpdateSliders(leftHandFingers, caller);
+        UpdateSliders(rightHandFingers, caller);
+    }
+
+    private void UpdateSliders(List<Finger> fingers, InteractibleObject caller)
+    {
+        // If the list is empty, do nothing (hand was not yet initialized)
+        if (fingers.Count != BONES_COUNT) return;
+
+
+        foreach (Finger finger in fingers)
+        {
+            // Cast ray from finger to the center of the object
+            RaycastHit[] hits;
+            Vector3 origin = finger.obj.transform.position;
+            Vector3 destination = caller.gameObject.transform.position;
+            hits = Physics.RaycastAll(origin, destination - origin, 100.0F);
+
+            foreach (RaycastHit hitInfo in hits)
+            {
+                // Debug - draw line in editor
+                if (finger.slider == rightHandSliders.sliderIndex) Debug.DrawRay(origin, destination - origin, Color.red);
+
+                // If the ray hit the object's collider, compare distance with threshold and update sliders
+                if (hitInfo.collider == caller.collider)
+                {
+                    if (hitInfo.distance < touchDistance)
+                        finger.slider.value = ((touchDistance - hitInfo.distance) * 120) / touchDistance;
+                    else
+                        finger.slider.value = 0;
+                }
+            }
+        }
     }
 
     private void TryFindFingers(string basePath)
@@ -98,35 +154,5 @@ public class CollisionSliders : MonoBehaviour
             }
         }
 
-    }
-
-    private void UpdateSliders(List<Finger> fingers)
-    {
-        // If the list is empty, do nothing (hand was not yet initialized)
-        if (fingers.Count != BONES_COUNT) return;
-
-
-        foreach (Finger finger in fingers)
-        {
-            // Cast ray from finger to the center of the object
-            RaycastHit[] hits;
-            Vector3 origin = finger.obj.transform.position;
-            hits = Physics.RaycastAll(origin, transform.position - origin, 100.0F);
-
-            foreach (RaycastHit hitInfo in hits)
-            {
-                // Debug - draw line in editor
-                if (finger.slider == rightHandSliders.sliderIndex) Debug.DrawRay(origin, transform.position - origin, Color.red);
-
-                // If the ray hit the object's collider, compare distance with threshold and update sliders
-                if (hitInfo.collider == myCollider)
-                {
-                    if (hitInfo.distance < touchDistance)
-                        finger.slider.value = ((touchDistance - hitInfo.distance) * 120) / touchDistance;
-                    else
-                        finger.slider.value = 0;
-                }
-            }
-        }
     }
 }
