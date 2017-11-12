@@ -132,6 +132,7 @@ fe1f246c3125df0499e5f9a33261d3c6 Assembly-CSharp.dll:Leap.Unity.LeapVRTemporalWa
 069abb959404dae856634f5c610ba860 Assembly-CSharp.dll:Leap.Unity.Interaction.AnchorGroup
 745f2b66636c2d9896edc2199338452f Assembly-CSharp.dll:Leap.Unity.Attachments.AttachmentPointBehaviour
 8a99c6f8639bfa9367c98e32a25cf5a1 Assembly-CSharp.dll:Leap.Unity.Examples.SimpleAnchorFeedback
+ef103f541761da5c56be924289d2d110 Assembly-CSharp.dll:.Configuration
 bc68edb0af574bf79f9550ead8ebae5c UnityEngine.HoloLens.dll:UnityEngine.Audio.AudioSpatializerMicrosoft
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.HoloLens.dll:UnityEngine.EventSystems.HoloLensInput
 463516d5b5fe8e67a0a24c48f2095b04 UnityEngine.HoloLens.dll:UnityEngine.EventSystems.HoloLensInputModule
@@ -143,7 +144,7 @@ bb454c2a217682ecc3be21cf39ceb679 Assembly-CSharp.dll:Leap.Unity.Examples.LinearR
 609b40990a613cdd45e3fefd6346c3ff Assembly-CSharp.dll:Leap.Unity.Attachments.AttachmentHands
 e4bcdbbccc9c7143702ada1780babc3a Assembly-CSharp.dll:Leap.Unity.FpsLabel
 a1bd51472deaf5e09fd19603c6063289 Assembly-CSharp.dll:Leap.Unity.Space.LeapSpaceAnchor
-94cecf8699ee346a64f075e12e58a0ef Assembly-CSharp.dll:.CollisionSliders
+def044cafb21467cdecccc0ad28bc220 Assembly-CSharp.dll:.CollisionSliders
 d60795789e6f0b89266e69f672546749 Assembly-CSharp.dll:Leap.Unity.Interaction.AnchorScoreTest
 5ed935b5a777826f463ab9976bc1a5d7 Assembly-CSharp.dll:Leap.Unity.EnableDepthBuffer
 1e9c3079a441c0c7ae003aa4b709d040 Assembly-CSharp.dll:Leap.Unity.RiggedFinger
