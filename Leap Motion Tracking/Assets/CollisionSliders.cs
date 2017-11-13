@@ -44,6 +44,8 @@ public class InteractibleObject
     public GameObject gameObject;
     public Collider collider; // Collider of interactible objects (stored for performance reasons)
 
+
+    // !!! SKUSIT PREROBIT TAK ABY SA NATIAHLO IBA SCENE, A NA ZACIATKU NAJDE VSETKY OBJEKTY V SCENE KTGORE MAJU INTERACTIONBEHAVIOR/alebo rigidbody
     public InteractibleObject(CollisionSliders manager, InteractionBehaviour ib)
     {
         // Register events
