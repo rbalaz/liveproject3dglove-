@@ -45,15 +45,18 @@ public class InteractibleObject
     public Collider collider; // Collider of interactible objects (stored for performance reasons)
 
 
-    // !!! SKUSIT PREROBIT TAK ABY SA NATIAHLO IBA SCENE, A NA ZACIATKU NAJDE VSETKY OBJEKTY V SCENE KTGORE MAJU INTERACTIONBEHAVIOR/alebo rigidbody
+    // !!! SKUSIT PREROBIT TAK ABY SA NATIAHLO IBA SCENE, A NA ZACIATKU NAJDE VSETKY OBJEKTY V SCENE KTORE MAJU INTERACTIONBEHAVIOR/alebo rigidbody
     public InteractibleObject(CollisionSliders manager, InteractionBehaviour ib)
     {
-        // Register events
-        ib.OnHoverEnd += (() => manager.UpdateOnHover(this));
-        ib.OnHoverStay += (() => manager.UpdateOnHover(this));
-        // Store gameObject and collider
-        gameObject = ib.gameObject;
-        collider = (ib.gameObject.GetComponent<Collider>());
+        if (manager != null && ib != null)
+        {
+            // Register events
+            ib.OnHoverEnd += (() => manager.UpdateOnHover(this));
+            ib.OnHoverStay += (() => manager.UpdateOnHover(this));
+            // Store gameObject and collider
+            gameObject = ib.gameObject;
+            collider = (ib.gameObject.GetComponent<Collider>());
+        }
     }
 }
 

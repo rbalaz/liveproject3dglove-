@@ -30,13 +30,16 @@ public class Deformation : MonoBehaviour {
         // Every update influences the current object scale
         uniformScale = transform.localScale.x;
         // Every vertix in the mesh will be updated when force is applied to object
-        for (int i = 0; i < displacedVertices.Length; i++)
+        if (displacedVertices != null)
         {
-            UpdateVertex(i);
+            for (int i = 0; i < displacedVertices.Length; i++)
+            {
+                UpdateVertex(i);
+            }
+            // Changed vertices are reassigned to mesh to cause the object to change in the game
+            deformingMesh.vertices = displacedVertices;
+            deformingMesh.RecalculateNormals();
         }
-        // Changed vertices are reassigned to mesh to cause the object to change in the game
-        deformingMesh.vertices = displacedVertices;
-        deformingMesh.RecalculateNormals();
     }
 
     private void OnCollisionEnter(Collision collision)
