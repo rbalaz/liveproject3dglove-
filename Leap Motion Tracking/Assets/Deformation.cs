@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
-public class Deformation : MonoBehaviour {
+public class Deformation : MonoBehaviour
+{
 
     // Initial scale
     private float uniformScale = 1f;
@@ -10,9 +11,12 @@ public class Deformation : MonoBehaviour {
     Vector3[] originalVertices, displacedVertices;
     // Vertex velocities change during interaction
     Vector3[] vertexVelocities;
+    // Trigger for update to change Mesh
+    bool collisionActive;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         // Mesh is aquired during initializing stage of the game
         deformingMesh = GetComponent<MeshFilter>().mesh;
         // Original object shape is stored
@@ -23,30 +27,53 @@ public class Deformation : MonoBehaviour {
             displacedVertices[i] = originalVertices[i];
         }
         vertexVelocities = new Vector3[originalVertices.Length];
+        collisionActive = false;
     }
-	
-	// Update is called once per frame
-	void Update () {
-        // Every update influences the current object scale
-        uniformScale = transform.localScale.x;
-        // Every vertix in the mesh will be updated when force is applied to object
-        if (displacedVertices != null)
+    
+    // Update is called once per frame
+    void Update()
+    {
+        if (collisionActive)
         {
-            for (int i = 0; i < displacedVertices.Length; i++)
+            Debug.Log("Updating: " + gameObject.transform.name);
+            // Every update influences the current object scale
+            uniformScale = transform.localScale.x;
+            // Every vertix in the mesh will be updated when force is applied to object
+            if (displacedVertices != null)
             {
-                UpdateVertex(i);
+                bool changeHappened = false;
+                for (int i = 0; i < displacedVertices.Length; i++)
+                {
+                    if (UpdateVertex(i))
+                        changeHappened = true;
+                }
+                if (!changeHappened)
+                {
+                    collisionActive = false;
+                    Debug.Log("Deformations disabled.");
+                }
+                // Changed vertices are reassigned to mesh to cause the object to change in the game
+                deformingMesh.vertices = displacedVertices;
+                deformingMesh.RecalculateNormals();
             }
-            // Changed vertices are reassigned to mesh to cause the object to change in the game
-            deformingMesh.vertices = displacedVertices;
-            deformingMesh.RecalculateNormals();
         }
     }
-
+    
     private void OnCollisionEnter(Collision collision)
     {
-        float force = 10f;
-        Vector3 point = collision.contacts[0].point;
-        AddDeformingForce(point, force);
+        Debug.Log("Collision: " + collision.transform.name);
+        if (collision.transform.name.ToLower().Contains("index") ||
+            collision.transform.name.ToLower().Contains("thumb") ||
+            collision.transform.name.ToLower().Contains("pinky") ||
+            collision.transform.name.ToLower().Contains("ring") ||
+            collision.transform.name.ToLower().Contains("middle"))
+        {
+            float force = 10f;
+            Vector3 point = collision.contacts[0].point;
+            AddDeformingForce(point, force);
+            Debug.Log("Deformations active");
+            collisionActive = true;
+        }
     }
 
     public void AddDeformingForce(Vector3 point, float force)
@@ -75,7 +102,7 @@ public class Deformation : MonoBehaviour {
         vertexVelocities[i] += pointToVertex.normalized * velocity;
     }
 
-    void UpdateVertex(int i)
+    bool UpdateVertex(int i)
     {
         float springForce = 20f;
         float damping = 5f;
@@ -93,5 +120,11 @@ public class Deformation : MonoBehaviour {
         vertexVelocities[i] = velocity;
         // Rule for changing position = velocity * deltaTime
         displacedVertices[i] += velocity * (Time.deltaTime / uniformScale);
+
+        if (velocity.magnitude < 0.0001)
+            return false;
+        else
+            return true;
+
     }
 }
