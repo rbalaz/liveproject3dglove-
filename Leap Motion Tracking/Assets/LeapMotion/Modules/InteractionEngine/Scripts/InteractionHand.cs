@@ -442,22 +442,22 @@ namespace Leap.Unity.Interaction
         private void initContactBones()
         {
             Dictionary<Finger.FingerType, string> _fingerNames = new Dictionary<Finger.FingerType, string>()
-      {
-        {Finger.FingerType.TYPE_INDEX, "Index" },
-        {Finger.FingerType.TYPE_MIDDLE, "Middle" },
-        {Finger.FingerType.TYPE_PINKY, "Pinky" },
-        {Finger.FingerType.TYPE_RING, "Ring" },
-        {Finger.FingerType.TYPE_THUMB, "Thumb" },
-        {Finger.FingerType.TYPE_UNKNOWN, "Unknown" }
-      };
+              {
+                {Finger.FingerType.TYPE_INDEX, "Index" },
+                {Finger.FingerType.TYPE_MIDDLE, "Middle" },
+                {Finger.FingerType.TYPE_PINKY, "Pinky" },
+                {Finger.FingerType.TYPE_RING, "Ring" },
+                {Finger.FingerType.TYPE_THUMB, "Thumb" },
+                {Finger.FingerType.TYPE_UNKNOWN, "Unknown" }
+              };
             Dictionary<Bone.BoneType, string> _boneNames = new Dictionary<Bone.BoneType, string>()
-      {
-        {Bone.BoneType.TYPE_DISTAL, "Distal" },
-        {Bone.BoneType.TYPE_INTERMEDIATE, "Intermediate" },
-        {Bone.BoneType.TYPE_INVALID, "Invalid" },
-        {Bone.BoneType.TYPE_METACARPAL, "Metacarpal" },
-        {Bone.BoneType.TYPE_PROXIMAL, "Proximal" }
-      };
+              {
+                {Bone.BoneType.TYPE_DISTAL, "Distal" },
+                {Bone.BoneType.TYPE_INTERMEDIATE, "Intermediate" },
+                {Bone.BoneType.TYPE_INVALID, "Invalid" },
+                {Bone.BoneType.TYPE_METACARPAL, "Metacarpal" },
+                {Bone.BoneType.TYPE_PROXIMAL, "Proximal" }
+              };
 
             _contactBones = new ContactBone[NUM_FINGERS * BONES_PER_FINGER + 1];
             _handContactBoneMapFunctions = new BoneMapFunc[NUM_FINGERS * BONES_PER_FINGER + 1];

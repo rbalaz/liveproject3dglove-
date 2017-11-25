@@ -35,7 +35,7 @@ public class Deformation : MonoBehaviour
     {
         if (collisionActive)
         {
-            Debug.Log("Updating: " + gameObject.transform.name);
+            //Debug.Log("Updating: " + gameObject.transform.name);
             // Every update influences the current object scale
             uniformScale = transform.localScale.x;
             // Every vertix in the mesh will be updated when force is applied to object
@@ -50,7 +50,7 @@ public class Deformation : MonoBehaviour
                 if (!changeHappened)
                 {
                     collisionActive = false;
-                    Debug.Log("Deformations disabled.");
+                    //Debug.Log("Deformations disabled.");
                 }
                 // Changed vertices are reassigned to mesh to cause the object to change in the game
                 deformingMesh.vertices = displacedVertices;
@@ -61,7 +61,7 @@ public class Deformation : MonoBehaviour
     
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Collision: " + collision.transform.name);
+       // Debug.Log("Collision: " + collision.transform.name);
         if (collision.transform.name.ToLower().Contains("index") ||
             collision.transform.name.ToLower().Contains("thumb") ||
             collision.transform.name.ToLower().Contains("pinky") ||
@@ -71,7 +71,7 @@ public class Deformation : MonoBehaviour
             float force = 10f;
             Vector3 point = collision.contacts[0].point;
             AddDeformingForce(point, force);
-            Debug.Log("Deformations active");
+            //Debug.Log("Deformations active");
             collisionActive = true;
         }
     }
