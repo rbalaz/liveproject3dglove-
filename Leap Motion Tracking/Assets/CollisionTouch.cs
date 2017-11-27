@@ -141,7 +141,7 @@ public class CollisionTouch : MonoBehaviour
             ilList.Add(new InteractibleObject(this, ib));
         }
 
-        server = new SocketServer("127.0.0.1", 7999, leftHandFingers, rightHandFingers);
+        server = new SocketServer("127.0.0.1", 7999, leftHandFingers, rightHandFingers); // DAT ADRESU, NIE 127.0.0.1
         server.Run();
     }
 
@@ -366,7 +366,7 @@ public class SocketServer
                 }
                 
 
-                byte[] msg = Encoding.ASCII.GetBytes(control_str.ToString() + '\0');
+                byte[] msg = Encoding.ASCII.GetBytes(control_str.ToString());
 
                 // Send data
                 stream.Write(msg, 0, msg.Length);
