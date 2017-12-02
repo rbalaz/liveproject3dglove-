@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Tracking.unity
+- path: Assets/DemoScene.unity
   isLoaded: 1
   isActive: 1
