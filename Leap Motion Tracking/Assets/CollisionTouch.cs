@@ -28,15 +28,11 @@ public class Finger
     public float minDistance;
     public Collider collider;
 
-    private float touchDistance;
-
-
-    public Finger(GameObject f, Sliders sl, float td)
+    public Finger(GameObject f, Sliders sl)
     {
         obj = f;
         collider = obj.GetComponent<Collider>();
         minDistance = float.PositiveInfinity;
-        touchDistance = td;
         nearObjects = new List<InteractibleObject>();
         FindSlider(sl);
     }
@@ -141,7 +137,7 @@ public class CollisionTouch : MonoBehaviour
             ilList.Add(new InteractibleObject(this, ib));
         }
 
-        server = new SocketServer("127.0.0.1", 7999, leftHandFingers, rightHandFingers); // DAT ADRESU, NIE 127.0.0.1
+        server = new SocketServer(SocketServer.GetLocalIP(), 7999, leftHandFingers, rightHandFingers);
         server.Run();
     }
 
@@ -260,9 +256,9 @@ public class CollisionTouch : MonoBehaviour
             if (tmp != null)
             {
                 if (basePath == BASE_PATH_LEFT)
-                    leftHandFingers.Add(new Finger(tmp, leftHandSliders, touchDistance));
+                    leftHandFingers.Add(new Finger(tmp, leftHandSliders));
                 else
-                    rightHandFingers.Add(new Finger(tmp, rightHandSliders, touchDistance));
+                    rightHandFingers.Add(new Finger(tmp, rightHandSliders));
             }
         }
 
@@ -298,15 +294,18 @@ public class SocketServer
 
     public void Run()
     {
+        Debug.Log("Server: Starting at " + localIP + ":" + port);
         // Start server
         server = new TcpListener(localIP, port);
         server.Start();
 
+        Debug.Log("Server: Waiting for client to connect...");
         // Start listening for clients
         listenThread = new Thread(new ThreadStart(Listen));
+        listenThread.IsBackground = true;
         listenThread.Start();
-        Thread.Sleep(100);
 
+        Thread.Sleep(100);
         Running = true;
     }
 
@@ -320,6 +319,7 @@ public class SocketServer
                 // Wait for new client to connect (blocking function)
                 TcpClient client = server.AcceptTcpClient();
 
+                Debug.Log("Server: Client connected with IP " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
                 // Handle client in new thread
                 Thread handler = new Thread(() => HandleClient(client));
                 handler.Start();
@@ -341,6 +341,7 @@ public class SocketServer
 
         try
         {
+            string lastData = "";
             while (true)
             {
                 // Create control string
@@ -364,13 +365,17 @@ public class SocketServer
                     control_str[control_str.Length - 1] = 'x';
                     control_str.Append('y');
                 }
-                
 
-                byte[] msg = Encoding.ASCII.GetBytes(control_str.ToString());
-
-                // Send data
-                stream.Write(msg, 0, msg.Length);
-                Debug.Log(control_str.ToString());
+                string newData = control_str.ToString();
+                if (newData != lastData)
+                {
+                    // Send data
+                    byte[] msg = Encoding.ASCII.GetBytes(newData);
+                    stream.Write(msg, 0, msg.Length);
+                    //Debug.Log(control_str.ToString());
+                    // Save
+                    lastData = newData;
+                }
 
                 Thread.Sleep(50);
             }
@@ -398,4 +403,19 @@ public class SocketServer
             }  
         }
     }
+
+    public static string GetLocalIP()
+    {
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (var ip in host.AddressList)
+        {
+            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            {
+                return ip.ToString();
+            }
+        }
+        Debug.LogError("Server: Cannot find IP address");
+        return null;
+    }
+
 }
