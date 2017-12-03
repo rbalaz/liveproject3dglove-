@@ -5,11 +5,14 @@ using UnityEngine;
 public class ObjectSetup : MonoBehaviour {
 
     public GameObject stage;
+    public Canvas canvas;
     private Transform[] children;
+    private Transform[] canvasChildren;
 
     private void Start()
     {
         children = stage.GetComponentsInChildren<Transform>();
+        canvasChildren = canvas.GetComponentsInChildren<Transform>();
     }
 
     public void ActivateSimpleSkeleton()
@@ -38,11 +41,11 @@ public class ObjectSetup : MonoBehaviour {
 
     public void ActivateDicom()
     {
-        for (int i = 0; i < children.Length; i++)
+        for (int i = 0; i < canvasChildren.Length; i++)
         {
-            if (children[i].name.Contains("dicom-abdomen"))
+            if (canvasChildren[i].name.Contains("RawImage"))
             {
-                GameObject gameobj = children[i].gameObject;
+                GameObject gameobj = canvasChildren[i].gameObject;
                 gameobj.SetActive(true);
             }
         }
@@ -50,11 +53,11 @@ public class ObjectSetup : MonoBehaviour {
 
     public void DeactivateDicom()
     {
-        for (int i = 0; i < children.Length; i++)
+        for (int i = 0; i < canvasChildren.Length; i++)
         {
-            if (children[i].name.Contains("dicom-abdomen"))
+            if (canvasChildren[i].name.Contains("RawImage"))
             {
-                GameObject gameobj = children[i].gameObject;
+                GameObject gameobj = canvasChildren[i].gameObject;
                 gameobj.SetActive(false);
             }
         }
@@ -65,11 +68,6 @@ public class ObjectSetup : MonoBehaviour {
         for (int i = 0; i < children.Length; i++)
         {
             if (children[i].name.Contains("Table"))
-            {
-                GameObject gameobj = children[i].gameObject;
-                gameobj.SetActive(true);
-            }
-            if (children[i].name.Contains("Scheletro50"))
             {
                 GameObject gameobj = children[i].gameObject;
                 gameobj.SetActive(true);
@@ -161,4 +159,5 @@ public class ObjectSetup : MonoBehaviour {
             }
         }
     }
+
 }

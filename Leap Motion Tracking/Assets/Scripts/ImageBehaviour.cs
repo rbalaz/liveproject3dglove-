@@ -6,13 +6,11 @@ using UnityEngine.UI;
 
 public class ImageBehaviour : MonoBehaviour {
     private float lastChange;
-    string currentImagePath;
     int currentImageNumber;
 
     void Start()
     {
         lastChange = Time.time;
-        currentImagePath = "Assets/DICOM/image-00001";
         currentImageNumber = 0;
     }
 
