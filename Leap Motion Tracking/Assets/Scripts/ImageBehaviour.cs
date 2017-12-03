@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,8 +18,8 @@ public class ImageBehaviour : MonoBehaviour {
         {
             currentImageNumber++;
             string numberString = currentImageNumber.ToString().PadLeft(6, '0');
-            string path = "Assets/Resources/image-" + numberString + ".jpg";
-            Texture2D texture = (Texture2D)AssetDatabase.LoadAssetAtPath(path, typeof(Texture2D));
+            string path = @"image-" + numberString;
+            Texture2D texture = (Texture2D)Resources.Load(path, typeof(Texture2D));
             RawImage image = gameObject.GetComponent<RawImage>();
             image.texture = texture;
             lastChange = Time.time;
