@@ -17,7 +17,7 @@ public class Configuration : MonoBehaviour {
     public void SetHeight(float value)
     {
         Vector3 pos = mainCameraRig.transform.position;
-        mainCameraRig.transform.position = new Vector3(pos.x, defaultCameraHeight + value, pos.z);
+        mainCameraRig.transform.position = new Vector3(pos.x, defaultCameraHeight + (value-0.5f)/3, pos.z);
     }
 
     public void GravityOn()
@@ -35,9 +35,12 @@ public class Configuration : MonoBehaviour {
         Transform[] allStageChildren = stage.GetComponentsInChildren<Transform>();
         foreach (Transform child in allStageChildren)
         {
-            Debug.Log(child.gameObject.name + ", " + transform);
-            Rigidbody childRb = child.GetComponent<Rigidbody>();
-            if (childRb != null) childRb.isKinematic = state;
+            //Debug.Log(child.gameObject.name + ", " + transform);
+            if (! child.CompareTag("Controls"))
+            {
+                Rigidbody childRb = child.GetComponent<Rigidbody>();
+                if (childRb != null) childRb.isKinematic = state;
+            }
         }
     }
 }

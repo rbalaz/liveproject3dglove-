@@ -9,13 +9,16 @@ public class MenuPanelControl : MonoBehaviour {
     public GameObject serverInfoDisplay;
     public GameObject sceneSettingsDisplay;
 
-    // Use this for initialization
     void Start()
     {
         menuCategoryText.GetComponent<TextMesh>().text = "Please select category";
+        Transform[] allChildren = GetComponentsInChildren<Transform>();
+        foreach (Transform child in allChildren)
+        {
+            child.gameObject.tag = "Controls";
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
 

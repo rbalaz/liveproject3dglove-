@@ -80,7 +80,7 @@ public class InteractibleObject
         {
             interaction = ib;
             // Register events
-            ib.OnHoverEnd += (() => manager.UpdateOnHoverEnd(this));
+            ib.OnHoverEnd += (() => manager.UpdateOnHoverEnd(this)); // CONTACT ?
             ib.OnHoverBegin += (() => manager.UpdateOnHoverBegin(this));
             // Store gameObject and collider
             gameObject = ib.gameObject;
