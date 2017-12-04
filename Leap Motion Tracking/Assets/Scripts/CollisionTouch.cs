@@ -1,4 +1,4 @@
-﻿using Leap.Unity.Interaction;
+using Leap.Unity.Interaction;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -372,7 +372,7 @@ public class SocketServer
                     // Send data
                     byte[] msg = Encoding.ASCII.GetBytes(newData);
                     stream.Write(msg, 0, msg.Length);
-                    //Debug.Log(control_str.ToString());
+					//Debug.Log(newData);
                     // Save
                     lastData = newData;
                 }

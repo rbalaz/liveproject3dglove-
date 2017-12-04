@@ -13,6 +13,11 @@ public class ObjectSetup : MonoBehaviour {
     {
         children = stage.GetComponentsInChildren<Transform>();
         canvasChildren = canvas.GetComponentsInChildren<Transform>();
+		DeactivateDicom ();
+		DeactivateMRI ();
+		DeactivatePatient ();
+		DeactivateSimpleObjects ();
+		DeactivateSimpleSkeleton ();
     }
 
     public void ActivateSimpleSkeleton()
@@ -84,11 +89,6 @@ public class ObjectSetup : MonoBehaviour {
                 GameObject gameobj = children[i].gameObject;
                 gameobj.SetActive(false);
             }
-            if (children[i].name.Contains("Scheletro50"))
-            {
-                GameObject gameobj = children[i].gameObject;
-                gameobj.SetActive(false);
-            }
         }
     }
 
@@ -118,12 +118,12 @@ public class ObjectSetup : MonoBehaviour {
     {
         for (int i = 0; i < children.Length; i++)
         {
-            if (children[i].name.Contains("Cube"))
+            if (children[i].name.Contains("Simple"))
             {
                 GameObject gameobj = children[i].gameObject;
                 gameobj.SetActive(false);
             }
-            if (children[i].name.Contains("Sphere"))
+            if (children[i].name.Contains("Simple"))
             {
                 GameObject gameobj = children[i].gameObject;
                 gameobj.SetActive(false);
