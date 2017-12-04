@@ -1,0 +1,15 @@
+c:\users\ja\documents\visual studio 2017\Projects\ServerTest\ServerTest\bin\Debug\ServerTest.exe.config
+c:\users\ja\documents\visual studio 2017\Projects\ServerTest\ServerTest\bin\Debug\ServerTest.exe
+c:\users\ja\documents\visual studio 2017\Projects\ServerTest\ServerTest\bin\Debug\ServerTest.pdb
+c:\users\ja\documents\visual studio 2017\Projects\ServerTest\ServerTest\obj\Debug\ServerTest.csprojResolveAssemblyReference.cache
+c:\users\ja\documents\visual studio 2017\Projects\ServerTest\ServerTest\obj\Debug\MainWindow.g.cs
+c:\users\ja\documents\visual studio 2017\Projects\ServerTest\ServerTest\obj\Debug\App.g.cs
+c:\users\ja\documents\visual studio 2017\Projects\ServerTest\ServerTest\obj\Debug\ServerTest_MarkupCompile.cache
+c:\users\ja\documents\visual studio 2017\Projects\ServerTest\ServerTest\obj\Debug\ServerTest_MarkupCompile.lref
+c:\users\ja\documents\visual studio 2017\Projects\ServerTest\ServerTest\obj\Debug\MainWindow.baml
+c:\users\ja\documents\visual studio 2017\Projects\ServerTest\ServerTest\obj\Debug\ServerTest.g.resources
+c:\users\ja\documents\visual studio 2017\Projects\ServerTest\ServerTest\obj\Debug\ServerTest.Properties.Resources.resources
+c:\users\ja\documents\visual studio 2017\Projects\ServerTest\ServerTest\obj\Debug\ServerTest.csproj.GenerateResource.Cache
+c:\users\ja\documents\visual studio 2017\Projects\ServerTest\ServerTest\obj\Debug\ServerTest.csproj.CoreCompileInputs.cache
+c:\users\ja\documents\visual studio 2017\Projects\ServerTest\ServerTest\obj\Debug\ServerTest.exe
+c:\users\ja\documents\visual studio 2017\Projects\ServerTest\ServerTest\obj\Debug\ServerTest.pdb
