@@ -95,7 +95,7 @@ public class Deformation : MonoBehaviour
         pointToVertex *= uniformScale;
         // Force needs to degrade with increasing distance from the contact point
         // Force is at full strength when distance is zero
-        float attenuatedForce = force / (1f + pointToVertex.sqrMagnitude);
+        float attenuatedForce = force / (1f + 150*pointToVertex.sqrMagnitude);
         // Force is coverted into velocity change
         float velocity = attenuatedForce * Time.deltaTime;
         // Velocity direction
@@ -104,8 +104,8 @@ public class Deformation : MonoBehaviour
 
     bool UpdateVertex(int i)
     {
-        float springForce = 20f;
-        float damping = 5f;
+        float springForce = 75f;
+        float damping = 10f;
 
         Vector3 velocity = vertexVelocities[i];
         Vector3 displacement = displacedVertices[i] - originalVertices[i];
