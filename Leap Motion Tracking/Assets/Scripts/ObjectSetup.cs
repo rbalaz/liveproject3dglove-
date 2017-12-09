@@ -13,11 +13,31 @@ public class ObjectSetup : MonoBehaviour {
     {
         children = stage.GetComponentsInChildren<Transform>();
         canvasChildren = canvas.GetComponentsInChildren<Transform>();
-		DeactivateDicom ();
-		DeactivateMRI ();
-		DeactivatePatient ();
-		DeactivateSimpleObjects ();
-		DeactivateSimpleSkeleton ();
+        FlushChildren();
+		DeactivateDicom();
+		DeactivateMRI();
+		DeactivatePatient();
+		DeactivateSimpleObjects();
+		DeactivateSimpleSkeleton();
+    }
+
+    private void FlushChildren()
+    {
+        List<Transform> stageChildren = new List<Transform>();
+        for (int i = 0; i < children.Length; i++)
+        {
+            if (children[i].parent.name == "Stage")
+                stageChildren.Add(children[i]);
+        }
+        children = stageChildren.ToArray();
+
+        List<Transform> canvasChildrenList = new List<Transform>();
+        for (int i = 0; i < canvasChildren.Length; i++)
+        {
+            if (canvasChildren[i].parent.name == "Canvas")
+                canvasChildrenList.Add(canvasChildren[i]);
+        }
+        canvasChildren = canvasChildrenList.ToArray();
     }
 
     public void ActivateSimpleSkeleton()
@@ -48,7 +68,7 @@ public class ObjectSetup : MonoBehaviour {
     {
         for (int i = 0; i < canvasChildren.Length; i++)
         {
-            if (canvasChildren[i].name.Contains("RawImage"))
+            if (canvasChildren[i].name.Contains("AbdomenModel"))
             {
                 GameObject gameobj = canvasChildren[i].gameObject;
                 gameobj.SetActive(true);
@@ -60,7 +80,7 @@ public class ObjectSetup : MonoBehaviour {
     {
         for (int i = 0; i < canvasChildren.Length; i++)
         {
-            if (canvasChildren[i].name.Contains("RawImage"))
+            if (canvasChildren[i].name.Contains("AbdomenModel"))
             {
                 GameObject gameobj = canvasChildren[i].gameObject;
                 gameobj.SetActive(false);
@@ -118,12 +138,12 @@ public class ObjectSetup : MonoBehaviour {
     {
         for (int i = 0; i < children.Length; i++)
         {
-            if (children[i].name.Contains("Simple"))
+            if (children[i].name.Contains("Cube"))
             {
                 GameObject gameobj = children[i].gameObject;
                 gameobj.SetActive(false);
             }
-            if (children[i].name.Contains("Simple"))
+            if (children[i].name.Contains("Sphere"))
             {
                 GameObject gameobj = children[i].gameObject;
                 gameobj.SetActive(false);
