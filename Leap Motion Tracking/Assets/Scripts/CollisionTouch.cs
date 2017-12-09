@@ -19,6 +19,12 @@ public class Sliders
     public Slider sliderPinky;
 }
 
+[System.Serializable]
+public class ServerInfo
+{
+    public GameObject IPAddressText;
+}
+
 public class Finger
 {
     public GameObject obj;
@@ -99,6 +105,8 @@ public class CollisionTouch : MonoBehaviour
     public Sliders rightHandSliders;
     [Tooltip("Container object where objects with InteractionBehaviour script will be placed")]
     public GameObject stage;
+    [Tooltip("GUI elements where information about server will be shown")]
+    public ServerInfo serverInfo;
 
     // List of interactible objects
     private List<InteractibleObject> ilList;
@@ -137,7 +145,7 @@ public class CollisionTouch : MonoBehaviour
             ilList.Add(new InteractibleObject(this, ib));
         }
 
-        server = new SocketServer(SocketServer.GetLocalIP(), 7999, leftHandFingers, rightHandFingers);
+        server = new SocketServer(SocketServer.GetLocalIP(), 7999, leftHandFingers, rightHandFingers, serverInfo);
         server.Run();
     }
 
@@ -279,9 +287,11 @@ public class SocketServer
     private List<Finger> leftHandFingers;
     private List<Finger> rightHandFingers;
 
+    private ServerInfo serverInfo;
+
     public bool Running { get; set; }
 
-    public SocketServer(string ip, int in_port, List<Finger> lFingers, List<Finger> rFingers)
+    public SocketServer(string ip, int in_port, List<Finger> lFingers, List<Finger> rFingers, ServerInfo sInfo)
     {
         localIP = IPAddress.Parse(ip);
         port = in_port;
@@ -290,14 +300,17 @@ public class SocketServer
         leftHandFingers = lFingers;
         rightHandFingers = rFingers;
         listenThread = null;
+        serverInfo = sInfo;
     }
 
     public void Run()
     {
         Debug.Log("Server: Starting at " + localIP + ":" + port);
+        serverInfo.IPAddressText.GetComponent<TextMesh>().text = (localIP.ToString() + ":" + port.ToString());
         // Start server
         server = new TcpListener(localIP, port);
         server.Start();
+
 
         Debug.Log("Server: Waiting for client to connect...");
         // Start listening for clients
