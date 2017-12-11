@@ -146,7 +146,14 @@ public class CollisionTouch : MonoBehaviour
         }
 
         server = new SocketServer(SocketServer.GetLocalIP(), 7999, leftHandFingers, rightHandFingers, serverInfo);
-        server.Run();
+		/*
+		Debug.Log("Server: Starting at " + SocketServer.GetLocalIP() + ":7999");
+        serverInfo.IPAddressText.GetComponent<TextMesh>().text = (SocketServer.GetLocalIP().ToString() + ":7999");
+		
+		Thread serverThread = new Thread(new ThreadStart(server.Run));
+		serverThread.IsBackground = true;
+		serverThread.Start();
+		*/
     }
 
     private void Update() // Try to find fingers in scene or update sliders
@@ -305,21 +312,33 @@ public class SocketServer
 
     public void Run()
     {
+		/*
         Debug.Log("Server: Starting at " + localIP + ":" + port);
         serverInfo.IPAddressText.GetComponent<TextMesh>().text = (localIP.ToString() + ":" + port.ToString());
-        // Start server
-        server = new TcpListener(localIP, port);
-        server.Start();
+		*/
+        try{
+			
+			// Start server
+			server = new TcpListener(localIP, port);
+			server.Start();
+		
 
+			Debug.Log("Server: Waiting for client to connect...");
+			// Start listening for clients
+			listenThread = new Thread(new ThreadStart(Listen));
+			listenThread.IsBackground = true;
+			listenThread.Start();
 
-        Debug.Log("Server: Waiting for client to connect...");
-        // Start listening for clients
-        listenThread = new Thread(new ThreadStart(Listen));
-        listenThread.IsBackground = true;
-        listenThread.Start();
-
-        Thread.Sleep(100);
-        Running = true;
+			Thread.Sleep(100);
+			Running = true;
+		
+		}
+		catch (Exception ex)
+        {
+            Debug.Log(ex.Message);
+            Restart();
+        }
+		
     }
 
     private void Listen()
@@ -343,7 +362,7 @@ public class SocketServer
             // SocketException
             // Usually throws exception if thread is aborted when waiting for client
             Debug.Log(ex.Message);
-            Stop();
+            Restart();
         }
     }
 
@@ -415,6 +434,13 @@ public class SocketServer
                 server.Stop(); // Stop listening
             }  
         }
+    }
+	
+	public void Restart()
+    {
+        Stop();
+		Thread.Sleep(1000);
+		Run();
     }
 
     public static string GetLocalIP()

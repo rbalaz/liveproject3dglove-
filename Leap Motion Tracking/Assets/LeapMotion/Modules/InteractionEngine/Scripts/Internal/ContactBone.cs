@@ -108,16 +108,45 @@ namespace Leap.Unity.Interaction {
     public float _lastObjectTouchedAdjustedMass;
 
     Dictionary<IInteractionBehaviour, float> contactingInteractionBehaviours = new Dictionary<IInteractionBehaviour, float>();
+	
+	
+	
+	private bool nCollision;
+	private bool nTrigger;
+	private bool lCollision;
+	private bool lTrigger;
+	private bool touching;
 
     void Start() {
       interactionController.manager.contactBoneBodies[rigidbody] = this;
-    }
+	  
+	  nCollision = false;
+	  nTrigger = false;
+	  lCollision = false;
+	  lTrigger = false;
+	  touching = false;
+	}
+	  
+	  void Update() {
+		  if (this.name.Contains("Index-Distal")){
+			  if (lCollision != nCollision || lTrigger != nTrigger){
+				lCollision = nCollision;
+				lTrigger = nTrigger;
+				
+				touching = nCollision || nTrigger;
+				Debug.Log(touching);
+			  }
+				  
+		  }
+	  }
 
     void OnDestroy() {
       interactionController.manager.contactBoneBodies.Remove(rigidbody);
     }
 
     void OnCollisionEnter(Collision collision) {
+		nCollision = true;
+		
       bool hitNonInteractionObject = false;
 
       if (collision.rigidbody == null) {
@@ -172,7 +201,7 @@ namespace Leap.Unity.Interaction {
     }
 
     private void OnCollisionStay(Collision collision) {
-      if (collision.rigidbody == null) { return; }
+	  if (collision.rigidbody == null) { return; }
 
       IInteractionBehaviour interactionObj;
       float timeEntered = 0;
@@ -188,6 +217,8 @@ namespace Leap.Unity.Interaction {
     }
 
     void OnCollisionExit(Collision collision) {
+		nCollision = false;
+		
       if (collision.rigidbody == null) { return; }
 
       IInteractionBehaviour interactionObj;
@@ -200,6 +231,7 @@ namespace Leap.Unity.Interaction {
     }
 
     void OnTriggerEnter(Collider collider) {
+		nTrigger = true;
       if (collider.attachedRigidbody == null) { return; }
 
       IInteractionBehaviour interactionObj;
@@ -211,6 +243,7 @@ namespace Leap.Unity.Interaction {
     }
 
     void OnTriggerExit(Collider collider) {
+		nTrigger = false;
       if (collider.attachedRigidbody == null) { return; }
 
       IInteractionBehaviour interactionObj;

@@ -19,11 +19,6 @@ public class MenuPanelControl : MonoBehaviour {
         }
     }
 
-    void Update()
-    {
-
-    }
-
 
     public void SelectServerInfoMenu()
     {
@@ -34,4 +29,6 @@ public class MenuPanelControl : MonoBehaviour {
     {
         menuCategoryText.GetComponent<TextMesh>().text = "Scene Settings";
     }
+	
+	
 }

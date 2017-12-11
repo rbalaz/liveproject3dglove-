@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,18 +26,23 @@ public class ObjectSetup : MonoBehaviour {
         List<Transform> stageChildren = new List<Transform>();
         for (int i = 0; i < children.Length; i++)
         {
-            if (children[i].parent.name == "Stage")
+           if (children[i].parent != null) 
+		if (children[i].parent.name == "Stage")
                 stageChildren.Add(children[i]);
         }
-        children = stageChildren.ToArray();
 
         List<Transform> canvasChildrenList = new List<Transform>();
-        for (int i = 0; i < canvasChildren.Length; i++)
+        for (int i = 0; i < children.Length; i++)
         {
-            if (canvasChildren[i].parent.name == "Canvas")
+           if(children[i].parent != null) 
+		if (children[i].parent.name == "Canvas")
                 canvasChildrenList.Add(canvasChildren[i]);
         }
-        canvasChildren = canvasChildrenList.ToArray();
+        
+	   List<Transform> childrenList = new List<Transform>();
+	   childrenList.AddRange(canvasChildren);
+	   childrenList.AddRange(stageChildren);
+	   children = childrenList.ToArray();
     }
 
     public void ActivateSimpleSkeleton()
@@ -66,11 +71,11 @@ public class ObjectSetup : MonoBehaviour {
 
     public void ActivateDicom()
     {
-        for (int i = 0; i < canvasChildren.Length; i++)
+        for (int i = 0; i < children.Length; i++)
         {
-            if (canvasChildren[i].name.Contains("AbdomenModel"))
+            if (children[i].name.Contains("AbdomenModel"))
             {
-                GameObject gameobj = canvasChildren[i].gameObject;
+                GameObject gameobj = children[i].gameObject;
                 gameobj.SetActive(true);
             }
         }
@@ -78,11 +83,11 @@ public class ObjectSetup : MonoBehaviour {
 
     public void DeactivateDicom()
     {
-        for (int i = 0; i < canvasChildren.Length; i++)
+        for (int i = 0; i < children.Length; i++)
         {
-            if (canvasChildren[i].name.Contains("AbdomenModel"))
+            if (children[i].name.Contains("AbdomenModel"))
             {
-                GameObject gameobj = canvasChildren[i].gameObject;
+                GameObject gameobj = children[i].gameObject;
                 gameobj.SetActive(false);
             }
         }
