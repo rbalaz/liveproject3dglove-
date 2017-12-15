@@ -38,22 +38,14 @@ public class CollisionTouch : MonoBehaviour
     [Tooltip("GUI elements where information about server will be shown")]
     public ServerInfo serverInfo;
 
-    private SocketServer server;
 
     void Start()
     {
-        // !! PRI RESTARTE SCENY JE CHYBA S PORTOM
-        server = new SocketServer(SocketServer.GetLocalIP(), 7999, leftHandSliders, rightHandSliders, serverInfo);
-		
-		Debug.Log("Server: Starting at " + SocketServer.GetLocalIP() + ":7999");
-        serverInfo.IPAddressText.GetComponent<TextMesh>().text = (SocketServer.GetLocalIP().ToString() + ":7999");
-		
-		Thread serverThread = new Thread(new ThreadStart(server.Run));
-		serverThread.IsBackground = true;
-		serverThread.Start();
-		
+        SocketServer.Stop();
+        Thread.Sleep(100);
+        SocketServer.Initialize(SocketServer.GetLocalIP(), 7999, leftHandSliders, rightHandSliders, serverInfo);
+        SocketServer.Run();
     }
-
 
     public void UpdateFinger(ContactBone.FingerType fingerType, bool isLeftHand, bool touching)
     {
@@ -90,58 +82,76 @@ public class CollisionTouch : MonoBehaviour
 
 public class SocketServer
 {
-    private IPAddress localIP;
-    private int port;
-    private TcpListener server;
-    private Thread listenThread;
+    private static IPAddress localIP;
+    private static int port;
+    private static TcpListener server;
+    private static Thread serverThread;
+    private static Thread listenThread;
 
-    private Sliders leftHandFingers;
-    private Sliders rightHandFingers;
+    private static Sliders leftHandFingers;
+    private static Sliders rightHandFingers;
 
-    private ServerInfo serverInfo;
+    private static ServerInfo serverInfo;
 
-    public bool Running { get; set; }
+    private static bool _running;
+    public static bool Running { get
+        {
+            return _running;
+        }
+    }
 
-    public SocketServer(string ip, int in_port, Sliders lFingers, Sliders rFingers, ServerInfo sInfo)
+
+    public static void Initialize(string ip, int in_port, Sliders lFingers, Sliders rFingers, ServerInfo sInfo)
     {
+        Stop();
         localIP = IPAddress.Parse(ip);
         port = in_port;
         server = null;
-        Running = false;
+        _running = false;
         leftHandFingers = lFingers;
         rightHandFingers = rFingers;
         listenThread = null;
+        serverThread = null;
         serverInfo = sInfo;
     }
 
-    public void Run()
+    public static void Run()
+    {
+        Stop();
+        serverThread = new Thread(new ThreadStart(RunServerThread));
+        serverThread.IsBackground = true;
+        serverThread.Start();
+    }
+
+    private static void RunServerThread()
     {
         Debug.Log("Server: Starting at " + localIP + ":" + port);
-        serverInfo.IPAddressText.GetComponent<TextMesh>().text = (localIP.ToString() + ":" + port.ToString());
-        try{
-			// Start server
-			server = new TcpListener(localIP, port);
-			server.Start();
-		
-			Debug.Log("Server: Waiting for client to connect...");
-			// Start listening for clients
-			listenThread = new Thread(new ThreadStart(Listen));
-			listenThread.IsBackground = true;
-			listenThread.Start();
+        Dispatcher.RunOnMainThread(() => serverInfo.IPAddressText.GetComponent<TextMesh>().text = (localIP.ToString() + ":" + port.ToString()));
 
-			Thread.Sleep(100);
-			Running = true;
-		
-		}
-		catch (Exception ex)
+        try
+        {
+            // Start server
+            server = new TcpListener(localIP, port);
+            server.Start();
+
+            Debug.Log("Server: Waiting for client to connect...");
+            // Start listening for clients
+            listenThread = new Thread(new ThreadStart(Listen));
+            listenThread.IsBackground = true;
+            listenThread.Start();
+
+            Thread.Sleep(100);
+            _running = true;
+
+        }
+        catch (Exception ex)
         {
             Debug.Log(ex.Message);
             Restart();
         }
-		
     }
 
-    private void Listen()
+    private static void Listen()
     {
         try
         {
@@ -166,7 +176,7 @@ public class SocketServer
         }
     }
 
-    private void HandleClient(TcpClient client)
+    private static void HandleClient(TcpClient client)
     {
         // Get a stream object
         NetworkStream stream = client.GetStream();
@@ -213,19 +223,27 @@ public class SocketServer
         client.Close();
     }
 
-    public void Stop()
+    public static void Stop()
     {
         if (Running)
         {
             if (server != null)
             {
-                Running = false;
+                _running = false;
                 server.Stop(); // Stop listening
-            }  
+            }
+        }
+        if (serverThread != null && serverThread.IsAlive)
+        {
+            serverThread.Abort();
+        }
+        if (listenThread != null && listenThread.IsAlive)
+        {
+            listenThread.Abort();
         }
     }
 	
-	public void Restart()
+	public static void Restart()
     {
         Stop();
 		Thread.Sleep(1000);
