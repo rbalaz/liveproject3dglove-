@@ -108,45 +108,55 @@ namespace Leap.Unity.Interaction {
     public float _lastObjectTouchedAdjustedMass;
 
     Dictionary<IInteractionBehaviour, float> contactingInteractionBehaviours = new Dictionary<IInteractionBehaviour, float>();
-	
-	
-	
-	private bool nCollision;
-	private bool nTrigger;
-	private bool lCollision;
-	private bool lTrigger;
-	private bool touching;
 
+
+    
+    private GameObject globalManager;
+    private CollisionTouch touchScript;
+    public enum FingerType
+    {
+        ThumbDistal,
+        IndexDistal,
+        MidleDistal,
+        RingDistal,
+        PinkyDistal,
+        Other
+    }
+    private FingerType fingerType;
+    private bool isLeftHand;
     void Start() {
       interactionController.manager.contactBoneBodies[rigidbody] = this;
-	  
-	  nCollision = false;
-	  nTrigger = false;
-	  lCollision = false;
-	  lTrigger = false;
-	  touching = false;
-	}
-	  
-	  void Update() {
-		  if (this.name.Contains("Index-Distal")){
-			  if (lCollision != nCollision || lTrigger != nTrigger){
-				lCollision = nCollision;
-				lTrigger = nTrigger;
-				
-				touching = nCollision || nTrigger;
-				Debug.Log(touching);
-			  }
-				  
-		  }
-	  }
+
+      if (this.transform.parent.name.Contains("Left")) isLeftHand = true;
+      else isLeftHand = false;
+
+      fingerType = FingerType.Other;
+      if (this.name.Contains("Distal")) {
+        if (this.name.Contains("Thumb")) fingerType = FingerType.ThumbDistal;
+        if (this.name.Contains("Index")) fingerType = FingerType.IndexDistal;
+        if (this.name.Contains("Middle")) fingerType = FingerType.MidleDistal;
+        if (this.name.Contains("Ring")) fingerType = FingerType.RingDistal;
+        if (this.name.Contains("Pinky")) fingerType = FingerType.PinkyDistal;
+      }
+      globalManager = GameObject.FindWithTag("ManagerTag");
+      touchScript = globalManager.GetComponent<CollisionTouch>();
+    }
+
+    private bool lastTouchStatus = false;
+    public void UpdateTouchStatus(bool touching)
+    {
+        if (this.fingerType != FingerType.Other && lastTouchStatus != touching)
+        {
+            touchScript.UpdateFinger(this.fingerType, isLeftHand, touching);
+            lastTouchStatus = touching;
+        }
+    }
 
     void OnDestroy() {
       interactionController.manager.contactBoneBodies.Remove(rigidbody);
     }
 
-    void OnCollisionEnter(Collision collision) {
-		nCollision = true;
-		
+    void OnCollisionEnter(Collision collision) {		
       bool hitNonInteractionObject = false;
 
       if (collision.rigidbody == null) {
@@ -216,9 +226,7 @@ namespace Leap.Unity.Interaction {
       }
     }
 
-    void OnCollisionExit(Collision collision) {
-		nCollision = false;
-		
+    void OnCollisionExit(Collision collision) {		
       if (collision.rigidbody == null) { return; }
 
       IInteractionBehaviour interactionObj;
@@ -231,7 +239,6 @@ namespace Leap.Unity.Interaction {
     }
 
     void OnTriggerEnter(Collider collider) {
-		nTrigger = true;
       if (collider.attachedRigidbody == null) { return; }
 
       IInteractionBehaviour interactionObj;
@@ -243,7 +250,6 @@ namespace Leap.Unity.Interaction {
     }
 
     void OnTriggerExit(Collider collider) {
-		nTrigger = false;
       if (collider.attachedRigidbody == null) { return; }
 
       IInteractionBehaviour interactionObj;
