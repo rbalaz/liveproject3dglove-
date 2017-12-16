@@ -110,7 +110,10 @@ namespace Leap.Unity.Interaction {
     Dictionary<IInteractionBehaviour, float> contactingInteractionBehaviours = new Dictionary<IInteractionBehaviour, float>();
 
 
-    
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // UPRAVENY KOD
     private GameObject globalManager;
     private CollisionTouch touchScript;
     public enum FingerType
@@ -124,6 +127,8 @@ namespace Leap.Unity.Interaction {
     }
     private FingerType fingerType;
     private bool isLeftHand;
+    private int controllerLayer;
+    private int groundLayer;
     void Start() {
       interactionController.manager.contactBoneBodies[rigidbody] = this;
 
@@ -140,6 +145,31 @@ namespace Leap.Unity.Interaction {
       }
       globalManager = GameObject.FindWithTag("ManagerTag");
       touchScript = globalManager.GetComponent<CollisionTouch>();
+      controllerLayer = interactionController.manager.contactBoneLayer.layerIndex;
+      groundLayer = LayerMask.NameToLayer("GroundLayer");
+    }
+    
+    private void Update()
+    {
+        if (this.fingerType != FingerType.Other && collider is CapsuleCollider)
+        { 
+            var boneCapsule = collider as CapsuleCollider;
+
+            Vector3 point0, point1;
+            boneCapsule.GetCapsulePoints(out point0, out point1);
+            
+            var buffer = Physics.OverlapCapsule(point0, point1, transform.lossyScale.x * boneCapsule.radius);
+            
+            
+            var colliders = new List<Collider>();
+            foreach (var col in buffer)
+            {
+                    if (col.gameObject.layer != controllerLayer) colliders.Add(col);
+                    if (col.gameObject.layer == groundLayer) AutoHeight.OnHandContact();
+            }
+
+            UpdateTouchStatus(colliders.Count > 0);
+        }
     }
 
     private bool lastTouchStatus = false;
@@ -151,6 +181,9 @@ namespace Leap.Unity.Interaction {
             lastTouchStatus = touching;
         }
     }
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     void OnDestroy() {
       interactionController.manager.contactBoneBodies.Remove(rigidbody);
