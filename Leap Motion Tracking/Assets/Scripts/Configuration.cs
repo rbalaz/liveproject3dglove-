@@ -81,7 +81,7 @@ public class Configuration : MonoBehaviour {
 		while (!asyncLoader.isDone) {
             //LoadingBar.fillAmount = async.progress / 0.9f; //Async progress returns always 0 here    
             Debug.Log(asyncLoader.progress);
-            //textPourcentage.text = LoadingBar.fillAmount + "%"; //I have always 0% because he fillAmount is always 0
+            //textPourcentage.text = LoadingBar.fillAmount + "%"; //I have always 0% because the fillAmount is always 0
             yield return null;
  
         }

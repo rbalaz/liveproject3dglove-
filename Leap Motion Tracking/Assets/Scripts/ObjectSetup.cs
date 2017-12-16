@@ -6,13 +6,16 @@ public class ObjectSetup : MonoBehaviour {
 
     public GameObject stage;
     public Canvas canvas;
-    private Transform[] children;
+    private Transform[] stageChildren;
     private Transform[] canvasChildren;
+    private Transform[] scheletroBones;
+    private Transform[] skeletonBones;
 
     private void Start()
     {
-        children = stage.GetComponentsInChildren<Transform>();
+        stageChildren = stage.GetComponentsInChildren<Transform>();
         canvasChildren = canvas.GetComponentsInChildren<Transform>();
+        skeletonBones = stage.GetComponentsInChildren<Transform>();
         FlushChildren();
 		DeactivateDicom();
 		DeactivateMRI();
@@ -23,47 +26,76 @@ public class ObjectSetup : MonoBehaviour {
 
     private void FlushChildren()
     {
-        List<Transform> stageChildren = new List<Transform>();
-        for (int i = 0; i < children.Length; i++)
+        List<Transform> stageChildrenList = new List<Transform>();
+        List<Transform> scheletroBonesList = new List<Transform>();
+        List<Transform> skeletonBonesList = new List<Transform>();
+        for (int i = 0; i < stageChildren.Length; i++)
         {
-           if (children[i].parent != null) 
-		if (children[i].parent.name == "Stage")
-                stageChildren.Add(children[i]);
+            if (stageChildren[i].parent != null)
+                if (stageChildren[i].parent.name == "Stage")
+                    stageChildrenList.Add(stageChildren[i]);
+                else if (stageChildren[i].parent.name.Contains("Scheletro"))
+                    scheletroBonesList.Add(stageChildren[i]);
+                else if (stageChildren[i].parent.name.Contains("Skeleton"))
+                    skeletonBonesList.Add(stageChildren[i]);
+
         }
 
         List<Transform> canvasChildrenList = new List<Transform>();
-        for (int i = 0; i < children.Length; i++)
+        for (int i = 0; i < canvasChildren.Length; i++)
         {
-           if(children[i].parent != null) 
-		if (children[i].parent.name == "Canvas")
-                canvasChildrenList.Add(canvasChildren[i]);
+            if (canvasChildren[i].parent != null)
+                if (canvasChildren[i].parent.name == "Canvas")
+                    canvasChildrenList.Add(canvasChildren[i]);
         }
         
-	   List<Transform> childrenList = new List<Transform>();
-	   childrenList.AddRange(canvasChildren);
-	   childrenList.AddRange(stageChildren);
-	   children = childrenList.ToArray();
+        canvasChildren = canvasChildrenList.ToArray();
+	    stageChildren = stageChildrenList.ToArray();
+        scheletroBones = scheletroBonesList.ToArray();
+        skeletonBones = skeletonBonesList.ToArray();
     }
 
     public void ActivateSimpleSkeleton()
     {
-        for (int i = 0; i < children.Length; i++)
+        StartCoroutine(SetSimpleBones(true));
+    }
+
+    private IEnumerator SetSimpleBones(bool status)
+    {
+        if (!status)
+            SetSimpleSkeleton(status);
+        for (int i = 0; i < skeletonBones.Length; i++)
         {
-            if (children[i].name.Contains("Skeleton"))
+            GameObject gameobj = skeletonBones[i].gameObject;
+            gameobj.SetActive(status);
+
+            yield return null;
+        }
+        if (status)
+            SetSimpleSkeleton(status);
+    }
+
+    private void SetSimpleSkeleton(bool status)
+    {
+        for (int i = 0; i < stageChildren.Length; i++)
+        {
+            if (stageChildren[i].name.Contains("Skeleton"))
             {
-                GameObject gameobj = children[i].gameObject;
-                gameobj.SetActive(true);
+                GameObject gameobj = stageChildren[i].gameObject;
+                gameobj.SetActive(status);
             }
         }
     }
 
     public void DeactivateSimpleSkeleton()
     {
-        for (int i = 0; i < children.Length; i++)
+        StartCoroutine(SetSimpleBones(false));
+
+        for (int i = 0; i < stageChildren.Length; i++)
         {
-            if (children[i].name.Contains("Skeleton"))
+            if (stageChildren[i].name.Contains("Skeleton"))
             {
-                GameObject gameobj = children[i].gameObject;
+                GameObject gameobj = stageChildren[i].gameObject;
                 gameobj.SetActive(false);
             }
         }
@@ -71,11 +103,11 @@ public class ObjectSetup : MonoBehaviour {
 
     public void ActivateDicom()
     {
-        for (int i = 0; i < children.Length; i++)
+        for (int i = 0; i < stageChildren.Length; i++)
         {
-            if (children[i].name.Contains("AbdomenModel"))
+            if (stageChildren[i].name.Contains("AbdomenModel"))
             {
-                GameObject gameobj = children[i].gameObject;
+                GameObject gameobj = stageChildren[i].gameObject;
                 gameobj.SetActive(true);
             }
         }
@@ -83,11 +115,11 @@ public class ObjectSetup : MonoBehaviour {
 
     public void DeactivateDicom()
     {
-        for (int i = 0; i < children.Length; i++)
+        for (int i = 0; i < stageChildren.Length; i++)
         {
-            if (children[i].name.Contains("AbdomenModel"))
+            if (stageChildren[i].name.Contains("AbdomenModel"))
             {
-                GameObject gameobj = children[i].gameObject;
+                GameObject gameobj = stageChildren[i].gameObject;
                 gameobj.SetActive(false);
             }
         }
@@ -95,45 +127,58 @@ public class ObjectSetup : MonoBehaviour {
 
     public void ActivatePatient()
     {
-        for (int i = 0; i < children.Length; i++)
+        StartCoroutine(SetScheletroBones(true));
+    }
+
+    private IEnumerator SetScheletroBones(bool status)
+    {
+        if (!status)
+            SetTable(status);
+        for (int i = 0; i < scheletroBones.Length; i++)
         {
-            if (children[i].name.Contains("Table"))
+            GameObject gameobj = scheletroBones[i].gameObject;
+            gameobj.SetActive(status);
+
+            yield return null;
+        }
+        if (status)
+            SetTable(status);
+    }
+
+    private void SetTable(bool status)
+    {
+        for (int i = 0; i < stageChildren.Length; i++)
+        {
+            if (stageChildren[i].name.Contains("Table"))
             {
-                GameObject gameobj = children[i].gameObject;
-                gameobj.SetActive(true);
+                GameObject gameobj = stageChildren[i].gameObject;
+                gameobj.SetActive(status);
             }
         }
     }
 
     public void DeactivatePatient()
     {
-        for (int i = 0; i < children.Length; i++)
-        {
-            if (children[i].name.Contains("Table"))
-            {
-                GameObject gameobj = children[i].gameObject;
-                gameobj.SetActive(false);
-            }
-        }
+        StartCoroutine(SetScheletroBones(false));
     }
 
     public void ActivateSimpleObjects()
     {
-        for (int i = 0; i < children.Length; i++)
+        for (int i = 0; i < stageChildren.Length; i++)
         {
-            if (children[i].name.Contains("Cube"))
+            if (stageChildren[i].name.Contains("Cube"))
             {
-                GameObject gameobj = children[i].gameObject;
+                GameObject gameobj = stageChildren[i].gameObject;
                 gameobj.SetActive(true);
             }
-            if (children[i].name.Contains("Sphere"))
+            if (stageChildren[i].name.Contains("Sphere"))
             {
-                GameObject gameobj = children[i].gameObject;
+                GameObject gameobj = stageChildren[i].gameObject;
                 gameobj.SetActive(true);
             }
-            if (children[i].name.Contains("Heart"))
+            if (stageChildren[i].name.Contains("Heart"))
             {
-                GameObject gameobj = children[i].gameObject;
+                GameObject gameobj = stageChildren[i].gameObject;
                 gameobj.SetActive(true);
             }
         }
@@ -141,21 +186,21 @@ public class ObjectSetup : MonoBehaviour {
 
     public void DeactivateSimpleObjects()
     {
-        for (int i = 0; i < children.Length; i++)
+        for (int i = 0; i < stageChildren.Length; i++)
         {
-            if (children[i].name.Contains("Cube"))
+            if (stageChildren[i].name.Contains("Cube"))
             {
-                GameObject gameobj = children[i].gameObject;
+                GameObject gameobj = stageChildren[i].gameObject;
                 gameobj.SetActive(false);
             }
-            if (children[i].name.Contains("Sphere"))
+            if (stageChildren[i].name.Contains("Sphere"))
             {
-                GameObject gameobj = children[i].gameObject;
+                GameObject gameobj = stageChildren[i].gameObject;
                 gameobj.SetActive(false);
             }
-            if (children[i].name.Contains("Heart"))
+            if (stageChildren[i].name.Contains("Heart"))
             {
-                GameObject gameobj = children[i].gameObject;
+                GameObject gameobj = stageChildren[i].gameObject;
                 gameobj.SetActive(false);
             }
         }
@@ -163,11 +208,11 @@ public class ObjectSetup : MonoBehaviour {
 
     public void ActivateMRI()
     {
-        for (int i = 0; i < children.Length; i++)
+        for (int i = 0; i < stageChildren.Length; i++)
         {
-            if (children[i].name.Contains("MRI Siemens"))
+            if (stageChildren[i].name.Contains("MRI Siemens"))
             {
-                GameObject gameobj = children[i].gameObject;
+                GameObject gameobj = stageChildren[i].gameObject;
                 gameobj.SetActive(true);
             }
         }
@@ -175,11 +220,11 @@ public class ObjectSetup : MonoBehaviour {
 
     public void DeactivateMRI()
     {
-        for (int i = 0; i < children.Length; i++)
+        for (int i = 0; i < stageChildren.Length; i++)
         {
-            if (children[i].name.Contains("MRI Siemens"))
+            if (stageChildren[i].name.Contains("MRI Siemens"))
             {
-                GameObject gameobj = children[i].gameObject;
+                GameObject gameobj = stageChildren[i].gameObject;
                 gameobj.SetActive(false);
             }
         }

@@ -132,7 +132,7 @@ fe1f246c3125df0499e5f9a33261d3c6 Assembly-CSharp.dll:Leap.Unity.LeapVRTemporalWa
 069abb959404dae856634f5c610ba860 Assembly-CSharp.dll:Leap.Unity.Interaction.AnchorGroup
 745f2b66636c2d9896edc2199338452f Assembly-CSharp.dll:Leap.Unity.Attachments.AttachmentPointBehaviour
 8a99c6f8639bfa9367c98e32a25cf5a1 Assembly-CSharp.dll:Leap.Unity.Examples.SimpleAnchorFeedback
-ef103f541761da5c56be924289d2d110 Assembly-CSharp.dll:.Configuration
+db6099d8bb25bf39175030492b8116e7 Assembly-CSharp.dll:.Configuration
 bc68edb0af574bf79f9550ead8ebae5c UnityEngine.HoloLens.dll:UnityEngine.Audio.AudioSpatializerMicrosoft
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.HoloLens.dll:UnityEngine.EventSystems.HoloLensInput
 463516d5b5fe8e67a0a24c48f2095b04 UnityEngine.HoloLens.dll:UnityEngine.EventSystems.HoloLensInputModule
@@ -156,6 +156,7 @@ d60795789e6f0b89266e69f672546749 Assembly-CSharp.dll:Leap.Unity.Interaction.Anch
 755d1587cad23324c3dab4afd367d66f Assembly-CSharp.dll:Leap.Unity.KeyEnableGameObjects
 fd9a204a03e1ea7c4d4927ff4cd31a0f Assembly-CSharp.dll:Leap.Unity.LeapVRCameraControl
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:Leap.Unity.Interaction.PhysicsCallbacks
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Dispatcher
 387f7f74fd3b9f6a11def026098e367c Assembly-CSharp.dll:Leap.Unity.RuntimeGizmos.RuntimeColliderGizmos
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Angles
 2220ddf26983420fa9e3a7681f419f0b Assembly-CSharp.dll:Leap.Unity.DebugHand
