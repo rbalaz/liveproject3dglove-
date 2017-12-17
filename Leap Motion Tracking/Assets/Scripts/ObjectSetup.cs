@@ -103,11 +103,11 @@ public class ObjectSetup : MonoBehaviour {
 
     public void ActivateDicom()
     {
-        for (int i = 0; i < stageChildren.Length; i++)
+        for (int i = 0; i < canvasChildren.Length; i++)
         {
-            if (stageChildren[i].name.Contains("AbdomenModel"))
+            if (canvasChildren[i].name.Contains("AbdomenModel"))
             {
-                GameObject gameobj = stageChildren[i].gameObject;
+                GameObject gameobj = canvasChildren[i].gameObject;
                 gameobj.SetActive(true);
             }
         }
@@ -115,11 +115,11 @@ public class ObjectSetup : MonoBehaviour {
 
     public void DeactivateDicom()
     {
-        for (int i = 0; i < stageChildren.Length; i++)
+        for (int i = 0; i < canvasChildren.Length; i++)
         {
-            if (stageChildren[i].name.Contains("AbdomenModel"))
+            if (canvasChildren[i].name.Contains("AbdomenModel"))
             {
-                GameObject gameobj = stageChildren[i].gameObject;
+                GameObject gameobj = canvasChildren[i].gameObject;
                 gameobj.SetActive(false);
             }
         }

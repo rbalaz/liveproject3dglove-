@@ -46,20 +46,22 @@ public class ImageBehaviour : MonoBehaviour {
 
             string numberString = imageNumber.PadLeft(6, '0');
             string path = @"image-" + numberString;
+            //string asset = "Assets/Resources/" + path + ".jpg";
+            //Texture2D texture = (Texture2D)AssetDatabase.LoadAssetAtPath(asset, typeof(Texture2D));
             Texture2D texture = (Texture2D)Resources.Load(path, typeof(Texture2D));
-            for (int i = 0; i < texture.height; i++)
-            {
-                for (int j = 0; j < texture.width; j++)
-                {
-                    Color color = texture.GetPixel(i, j);
-                    Color newColor;
-                    if (color.grayscale < 15)
-                        newColor = new Color(color.r, color.g, color.b, 0);
-                    else
-                        newColor = new Color(color.r, color.g, color.b, 1);
-                    texture.SetPixel(i, j, newColor);
-                }
-            }
+            //for (int i = 0; i < texture.height; i++)
+            //{
+            //    for (int j = 0; j < texture.width; j++)
+            //    {
+            //        Color color = texture.GetPixel(i, j);
+            //        Color newColor;
+            //        if (color.grayscale < 15)
+            //            newColor = new Color(color.r, color.g, color.b, 0);
+            //        else
+            //            newColor = new Color(color.r, color.g, color.b, 1);
+            //        texture.SetPixel(i, j, newColor);
+            //    }
+            //}
             RawImage image = imageComponents[l].GetComponent<RawImage>();
             image.texture = texture;
 
