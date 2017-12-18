@@ -34,9 +34,9 @@ public class ObjectSetup : MonoBehaviour {
             if (stageChildren[i].parent != null)
                 if (stageChildren[i].parent.name == "Stage")
                     stageChildrenList.Add(stageChildren[i]);
-                else if (stageChildren[i].parent.name.Contains("Scheletro"))
+                else if (stageChildren[i].parent.name.Contains("Scheletro") && stageChildren[i].parent.parent.name.Contains("Table"))
                     scheletroBonesList.Add(stageChildren[i]);
-                else if (stageChildren[i].parent.name.Contains("Skeleton"))
+                else if (stageChildren[i].parent.name.Contains("Skeleton") && stageChildren[i].parent.parent.name.Contains("Stage"))
                     skeletonBonesList.Add(stageChildren[i]);
 
         }
@@ -176,13 +176,23 @@ public class ObjectSetup : MonoBehaviour {
                 GameObject gameobj = stageChildren[i].gameObject;
                 gameobj.SetActive(true);
             }
-            if (stageChildren[i].name.Contains("Heart"))
+        }
+		StartCoroutine(SetHeart(true));
+    }
+	
+	private IEnumerator SetHeart(bool status)
+	{
+		for(int i = 0; i < stageChildren.Length; i++)
+		{
+			 if (stageChildren[i].name.Contains("Heart"))
             {
                 GameObject gameobj = stageChildren[i].gameObject;
-                gameobj.SetActive(true);
+                gameobj.SetActive(status);
+				
+				yield return null;
             }
-        }
-    }
+		}
+	}
 
     public void DeactivateSimpleObjects()
     {
@@ -198,12 +208,9 @@ public class ObjectSetup : MonoBehaviour {
                 GameObject gameobj = stageChildren[i].gameObject;
                 gameobj.SetActive(false);
             }
-            if (stageChildren[i].name.Contains("Heart"))
-            {
-                GameObject gameobj = stageChildren[i].gameObject;
-                gameobj.SetActive(false);
-            }
         }
+		
+		StartCoroutine(SetHeart(false));
     }
 
     public void ActivateMRI()

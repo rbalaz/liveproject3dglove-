@@ -61,7 +61,7 @@ public class Deformation : MonoBehaviour
     
     private void OnCollisionEnter(Collision collision)
     {
-       // Debug.Log("Collision: " + collision.transform.name);
+        //Debug.Log("Collision: " + collision.transform.name);
         if (collision.transform.name.ToLower().Contains("index") ||
             collision.transform.name.ToLower().Contains("thumb") ||
             collision.transform.name.ToLower().Contains("pinky") ||
@@ -75,6 +75,7 @@ public class Deformation : MonoBehaviour
             collisionActive = true;
         }
     }
+	
 
     public void AddDeformingForce(Vector3 point, float force)
     {
