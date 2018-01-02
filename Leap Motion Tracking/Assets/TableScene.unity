@@ -23036,6 +23036,7 @@ GameObject:
   - component: {fileID: 502262675}
   - component: {fileID: 502262674}
   - component: {fileID: 502262676}
+  - component: {fileID: 502262678}
   - component: {fileID: 502262677}
   m_Layer: 0
   m_Name: GlobalManager
@@ -23082,7 +23083,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d3a5c364baa36c4d8bf53f6a0b92434, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  touchDistance: 0.03
   leftHandSliders:
     sliderThumb: {fileID: 1213272966}
     sliderIndex: {fileID: 920289178}
@@ -23095,9 +23095,6 @@ MonoBehaviour:
     sliderMiddle: {fileID: 1868316848}
     sliderRing: {fileID: 235040886}
     sliderPinky: {fileID: 955450634}
-  stage: {fileID: 904515434}
-  serverInfo:
-    IPAddressText: {fileID: 508357286}
 --- !u!114 &502262677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23111,6 +23108,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stage: {fileID: 904515434}
   canvas: {fileID: 1194323292}
+--- !u!114 &502262678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 502262673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ec9dc165b2b8774bab35a46e16f363c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverInfo:
+    IPAddressText: {fileID: 508357286}
 --- !u!1 &502620152
 GameObject:
   m_ObjectHideFlags: 0
@@ -23207,7 +23217,7 @@ GameObject:
   - component: {fileID: 508357289}
   - component: {fileID: 508357288}
   m_Layer: 0
-  m_Name: Text
+  m_Name: ServerIPText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -114,18 +114,7 @@ namespace Leap.Unity.Interaction {
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // UPRAVENY KOD
-    private GameObject globalManager;
-    private CollisionTouch touchScript;
-    public enum FingerType
-    {
-        ThumbDistal,
-        IndexDistal,
-        MidleDistal,
-        RingDistal,
-        PinkyDistal,
-        Other
-    }
-    private FingerType fingerType;
+    private TouchFingerType fingerType;
     private bool isLeftHand;
     private int controllerLayer;
     private int groundLayer;
@@ -135,23 +124,21 @@ namespace Leap.Unity.Interaction {
       if (this.transform.parent.name.Contains("Left")) isLeftHand = true;
       else isLeftHand = false;
 
-      fingerType = FingerType.Other;
+      fingerType = TouchFingerType.Other;
       if (this.name.Contains("Distal")) {
-        if (this.name.Contains("Thumb")) fingerType = FingerType.ThumbDistal;
-        if (this.name.Contains("Index")) fingerType = FingerType.IndexDistal;
-        if (this.name.Contains("Middle")) fingerType = FingerType.MidleDistal;
-        if (this.name.Contains("Ring")) fingerType = FingerType.RingDistal;
-        if (this.name.Contains("Pinky")) fingerType = FingerType.PinkyDistal;
+        if (this.name.Contains("Thumb")) fingerType = TouchFingerType.ThumbDistal;
+        if (this.name.Contains("Index")) fingerType = TouchFingerType.IndexDistal;
+        if (this.name.Contains("Middle")) fingerType = TouchFingerType.MidleDistal;
+        if (this.name.Contains("Ring")) fingerType = TouchFingerType.RingDistal;
+        if (this.name.Contains("Pinky")) fingerType = TouchFingerType.PinkyDistal;
       }
-      globalManager = GameObject.FindWithTag("ManagerTag");
-      touchScript = globalManager.GetComponent<CollisionTouch>();
       controllerLayer = interactionController.manager.contactBoneLayer.layerIndex;
       groundLayer = LayerMask.NameToLayer("GroundLayer");
     }
     
     private void Update()
     {
-        if (this.fingerType != FingerType.Other && collider is CapsuleCollider)
+        if (this.fingerType != TouchFingerType.Other && collider is CapsuleCollider)
         { 
             var boneCapsule = collider as CapsuleCollider;
 
@@ -175,9 +162,9 @@ namespace Leap.Unity.Interaction {
     private bool lastTouchStatus = false;
     public void UpdateTouchStatus(bool touching)
     {
-        if (this.fingerType != FingerType.Other && lastTouchStatus != touching)
+        if (this.fingerType != TouchFingerType.Other && lastTouchStatus != touching)
         {
-            touchScript.UpdateFinger(this.fingerType, isLeftHand, touching);
+            TouchDetection.UpdateFinger(this.fingerType, isLeftHand, touching);
             lastTouchStatus = touching;
         }
     }
