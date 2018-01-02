@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Leap.Unity.Animation;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,12 +7,26 @@ using UnityEngine;
 public class MenuPanelControl : MonoBehaviour {
 
     public GameObject menuCategoryText;
-    public GameObject serverInfoDisplay;
-    public GameObject sceneSettingsDisplay;
+    public GameObject serverInfoAnimator;
+    public GameObject sceneSettingsAnimator;
+
+    private enum CurrentItem
+    {
+        ServerInfo,
+        SceneSettings,   
+        None
+    }
+    private CurrentItem currentItem;
+
+    private string textBasic = ". . . . . . . . . . . . . . . . . . . . . . .";
+    private string textServer = "Server Info";
+    private string textSceneSettings = "Scene Settings";
 
     void Start()
     {
-        menuCategoryText.GetComponent<TextMesh>().text = "Please select category";
+        currentItem = CurrentItem.None;
+        menuCategoryText.GetComponent<TextMesh>().text = textBasic;
+
         Transform[] allChildren = GetComponentsInChildren<Transform>();
         foreach (Transform child in allChildren)
         {
@@ -19,15 +34,38 @@ public class MenuPanelControl : MonoBehaviour {
         }
     }
 
-
     public void SelectServerInfoMenu()
     {
-        menuCategoryText.GetComponent<TextMesh>().text = "Server Info";
+        if (currentItem == CurrentItem.ServerInfo)
+        {
+            menuCategoryText.GetComponent<TextMesh>().text = textBasic;
+            serverInfoAnimator.GetComponent<TransformTweenBehaviour>().PlayBackward();
+            currentItem = CurrentItem.None;
+        }
+        else
+        {
+            menuCategoryText.GetComponent<TextMesh>().text = textServer;
+            sceneSettingsAnimator.GetComponent<TransformTweenBehaviour>().PlayBackward();
+            serverInfoAnimator.GetComponent<TransformTweenBehaviour>().PlayForwardAfterDelay(0.4f);
+            currentItem = CurrentItem.ServerInfo;
+        }
     }
 
     public void SelectSceneSettingsMenu()
     {
-        menuCategoryText.GetComponent<TextMesh>().text = "Scene Settings";
+        if (currentItem == CurrentItem.SceneSettings)
+        {
+            menuCategoryText.GetComponent<TextMesh>().text = textBasic;
+            sceneSettingsAnimator.GetComponent<TransformTweenBehaviour>().PlayBackward();
+            currentItem = CurrentItem.None;
+        }
+        else
+        {
+            menuCategoryText.GetComponent<TextMesh>().text = textSceneSettings;
+            serverInfoAnimator.GetComponent<TransformTweenBehaviour>().PlayBackward();
+            sceneSettingsAnimator.GetComponent<TransformTweenBehaviour>().PlayForwardAfterDelay(0.4f);
+            currentItem = CurrentItem.SceneSettings;
+        }
     }
 	
 	

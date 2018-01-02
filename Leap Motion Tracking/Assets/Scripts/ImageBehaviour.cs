@@ -39,7 +39,7 @@ public class ImageBehaviour : MonoBehaviour {
     {
         for (int l = 0; l < imageComponents.Length; l++)
         {
-            Debug.Log(imageComponents[l].transform.name);
+            //Debug.Log(imageComponents[l].transform.name);
             string objectName = imageComponents[l].transform.name;
             string[] parts = objectName.Split(' ');
             string imageNumber = parts[1].Substring(1, parts[1].Length - 2);

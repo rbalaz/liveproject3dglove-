@@ -9,6 +9,15 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ * static class - zaznamena zmenu dotyku a vytvori event
+ * server samostatny skript
+ * slidre nezavisle na zbytku
+ * 
+ * 
+ */
+
+
 [System.Serializable]
 public class Sliders
 {
@@ -27,8 +36,6 @@ public class ServerInfo
 
 public class CollisionTouch : MonoBehaviour
 {
-    [Tooltip("Distance threshold to decide whether finger is touching the object")]
-    public float touchDistance;
     [Tooltip("Sliders for left hand fingers")]
     public Sliders leftHandSliders;
     [Tooltip("Sliders for right hand fingers")]
