@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Leap.Unity.Interaction;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,6 +12,12 @@ public class Configuration : MonoBehaviour {
     private float defaultCameraHeight;
 	
 	public GameObject loader;
+
+    public GameObject gravityCube;
+    public Material OnMaterial;
+    public Material OffMaterial;
+
+    public static bool IsGravityOn = false;
 
     void Start()
     {
@@ -37,19 +44,35 @@ public class Configuration : MonoBehaviour {
         mainCameraRig.transform.position = new Vector3(pos.x, defaultCameraHeight + (value-0.5f)/3, pos.z);
     }
 
+    public void SetGravity(float value)
+    {
+        if (value < 0.5)
+        {
+            GravityOn();
+            gravityCube.GetComponent<Renderer>().material.color = OnMaterial.color;
+        }
+        else
+        {
+            GravityOff();
+            gravityCube.GetComponent<Renderer>().material.color = OffMaterial.color;
+        }
+    }
+
     public void GravityOn()
     {
-        StartCoroutine(SetKinematic(false));
+        if(!IsGravityOn)
+            StartCoroutine(SetKinematic(false));
     }
 
     public void GravityOff()
     {
-		StartCoroutine(SetKinematic(true));
+        if (IsGravityOn)
+            StartCoroutine(SetKinematic(true));
     }
 
-    private IEnumerator SetKinematic(bool state)
+    private IEnumerator SetKinematic(bool kinematicState)
     {
-        Transform[] allStageChildren = stage.GetComponentsInChildren<Transform>();
+        Transform[] allStageChildren = stage.GetComponentsInChildren<Transform>(true);
 		int i = 0;
         foreach (Transform child in allStageChildren)
         {
@@ -58,12 +81,13 @@ public class Configuration : MonoBehaviour {
             if (! child.CompareTag("Controls"))
             {
                 Rigidbody childRb = child.GetComponent<Rigidbody>();
-                if (childRb != null) childRb.isKinematic = state;
+                if (childRb != null) childRb.isKinematic = kinematicState;
             }
 			i++;
 			if (i%10 == 0)
 				yield return null;
         }
+        IsGravityOn = !kinematicState;
     }
 	
 	public void ResetScene()

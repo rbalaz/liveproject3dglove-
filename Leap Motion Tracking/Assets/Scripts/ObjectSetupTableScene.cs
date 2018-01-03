@@ -2,12 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class SimpleObjectList
+{
+    public GameObject gameObject;
+    public Transform SpawnPosition;
+}
+
 public class ObjectSetupTableScene : MonoBehaviour {
 
     public GameObject dicom;
     public GameObject patient;
+    public GameObject heart;
     public GameObject MRI;
-    public List<GameObject> simpleObjects;
+    public List<SimpleObjectList> simpleObjects;
+
+    private List<GameObject> simpleObjectsOnScene = new List<GameObject>();
     
     private List<Transform> patientParts = new List<Transform>();
     private List<Transform> MRIParts = new List<Transform>();
@@ -34,12 +44,18 @@ public class ObjectSetupTableScene : MonoBehaviour {
         SwitchPatient(false);
         SwitchMRI(false);
         SwitchDicom(false);
+        SwitchHeart(false);
         SwitchSimpleObjects(false);
     }
 
     public void SwitchDicom(bool state)
     {
         dicom.SetActive(state);
+    }
+
+    public void SwitchHeart(bool state)
+    {
+        heart.SetActive(state);
     }
 
     public void SwitchPatient(bool state)
@@ -85,11 +101,28 @@ public class ObjectSetupTableScene : MonoBehaviour {
 
     private IEnumerator SwitchSimpleObjectsCoroutine(bool state)
     {
-        foreach (var obj in simpleObjects)
+        if (state == true)
+            foreach (var obj in simpleObjects)
+            {
+                GameObject newObj = Instantiate(obj.gameObject, obj.SpawnPosition.parent);
+                newObj.transform.position = obj.SpawnPosition.transform.position;
+                if (Configuration.IsGravityOn)
+                {
+                    newObj.GetComponent<Rigidbody>().isKinematic = false;
+                }
+                simpleObjectsOnScene.Add(newObj);
+                yield return null;
+            }
+        else
         {
-            obj.SetActive(state);
-            yield return null;
+            foreach (var obj in simpleObjectsOnScene)
+            {
+                Destroy(obj);
+                yield return null;
+            }
+            simpleObjectsOnScene = new List<GameObject>();
         }
+            
     }
 
 }
