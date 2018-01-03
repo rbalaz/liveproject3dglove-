@@ -7,9 +7,19 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 
-public class SocketServer : MonoBehaviour {
+[System.Serializable]
+public class ServerInfo
+{
+    public GameObject IPAddressText;
+    public GameObject leftHandConnectionColor;
+    public GameObject rightHandConnectionColor;
+    public GameObject leftHandConnectionText;
+    public GameObject rightHandConnectionText;
+    public Material connectedMaterial;
+    public Material disconnectedMaterial;
+}
 
-    [Tooltip("GUI elements where information about server will be shown")]
+public class SocketServer : MonoBehaviour {
     public ServerInfo serverInfo;
 
     void Start () {
@@ -39,7 +49,6 @@ public class ServerClass
             return _running;
         }
     }
-
 
     public static void Initialize(string ip, int in_port, ServerInfo sInfo)
     {
@@ -84,7 +93,7 @@ public class ServerClass
         }
         catch (Exception ex)
         {
-            Debug.Log(ex.Message);
+            Debug.LogException(ex);
             Restart();
         }
     }
@@ -102,6 +111,7 @@ public class ServerClass
                 Debug.Log("Server: Client connected with IP " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
                 // Handle client in new thread
                 Thread handler = new Thread(() => HandleClient(client));
+                handler.IsBackground = true;
                 handler.Start();
             }
         }
@@ -109,7 +119,7 @@ public class ServerClass
         {
             // SocketException
             // Usually throws exception if thread is aborted when waiting for client
-            Debug.Log(ex.Message);
+            Debug.LogException(ex);
             Restart();
         }
     }
@@ -118,20 +128,40 @@ public class ServerClass
     {
         // Get a stream object
         NetworkStream stream = client.GetStream();
+        TouchFinger[] fingerData = null;
+        bool isLeftHand = false;
 
         try
         {
+            byte[] incMsg = new byte[1024];
+            int length;
+            while ((length = stream.Read(incMsg, 0, incMsg.Length)) == 0); // Wait for message
+            string incoming = Encoding.ASCII.GetString(incMsg, 0, length);
+            if (incoming == "l")
+            {
+                Debug.Log("Sending LEFT hand data to client " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
+                fingerData = TouchDetection.touchFingersLeft;
+                isLeftHand = true;
+            }
+            else
+            {
+                Debug.Log("Sending RIGHT hand data to client " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
+                fingerData = TouchDetection.touchFingersRight;
+                isLeftHand = false;
+            }
+            DisplayInfo(true, isLeftHand);
+
             string lastData = "";
             while (true)
             {
                 // Create control string
                 StringBuilder control_str = new StringBuilder();
 
-                for (int f = 0; f < TouchDetection.touchFingersLeft.Length; f++)
+                for (int f = 0; f < fingerData.Length; f++)
                 {
-                    control_str.Append(TouchDetection.touchFingersLeft[f].touching ? "100" : "0");
+                    control_str.Append(fingerData[f].touching ? "100" : "0");
 
-                    if (f == TouchDetection.touchFingersLeft.Length-1)
+                    if (f == fingerData.Length-1)
                         control_str.Append("xy");
                     else
                         control_str.Append(",");
@@ -157,9 +187,10 @@ public class ServerClass
         {
             // System.IO.IOException
             // Usually throws exception when client disconnects during transmit
-            Debug.Log(ex.Message);
+            Debug.LogException(ex);
+            DisplayInfo(false, isLeftHand);
         }
-
+        DisplayInfo(false, isLeftHand);
         // End connection
         stream.Close();
         client.Close();
@@ -204,5 +235,23 @@ public class ServerClass
         }
         Debug.LogError("Server: Cannot find IP address");
         return null;
+    }
+
+    public static void DisplayInfo(bool connected, bool isLeftHand)
+    {
+        string message = connected ? "Connected" : "Not connected";
+        Material mat = connected ? serverInfo.connectedMaterial : serverInfo.disconnectedMaterial;
+
+        if (isLeftHand)
+        {
+            Dispatcher.RunOnMainThread(() => serverInfo.leftHandConnectionText.GetComponent<TextMesh>().text = message);
+            Dispatcher.RunOnMainThread(() => serverInfo.leftHandConnectionColor.GetComponent<Renderer>().material.color = mat.color);
+        }
+        else
+        {
+            Dispatcher.RunOnMainThread(() => serverInfo.rightHandConnectionText.GetComponent<TextMesh>().text = message);
+            Dispatcher.RunOnMainThread(() => serverInfo.rightHandConnectionColor.GetComponent<Renderer>().material.color = mat.color);
+        }
+           
     }
 }

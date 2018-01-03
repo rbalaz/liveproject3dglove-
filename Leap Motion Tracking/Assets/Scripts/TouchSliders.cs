@@ -19,12 +19,6 @@ public class Sliders
     public Slider sliderPinky;
 }
 
-[System.Serializable]
-public class ServerInfo
-{
-    public GameObject IPAddressText;
-}
-
 public class TouchSliders : MonoBehaviour
 {
     [Tooltip("Sliders for left hand fingers")]

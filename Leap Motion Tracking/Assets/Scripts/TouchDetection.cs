@@ -65,7 +65,8 @@ public class TouchDetection : MonoBehaviour {
             if (hand[(int)fingerType].touching != touching)
             {
                 hand[(int)fingerType].touching = touching;
-                OnTouchValueChange(fingerType, isLeftHand, touching);
+                if (OnTouchValueChange != null)
+                    OnTouchValueChange(fingerType, isLeftHand, touching);
             }
         }
         else
