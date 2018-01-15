@@ -9,71 +9,104 @@ public class SimpleObjectList
     public Transform SpawnPosition;
 }
 
-[System.Serializable]
-public class ObjectControl
+public class ObjectSetupTableScene : MonoBehaviour
 {
-    public GameObject gameObject;
-    public GameObject onButton;
-    public GameObject offButton;
-}
 
-public class ObjectSetupTableScene : MonoBehaviour {
-
-    public ObjectControl dicom;
-    public ObjectControl patient;
-    public ObjectControl heart;
-    public ObjectControl MRI;
+    public GameObject dicom;
+    public GameObject patient;
+    public GameObject heart;
+    public GameObject MRI;
+    public GameObject bones;
+    public GameObject bonesImage;
     public List<SimpleObjectList> simpleObjects;
 
     private List<GameObject> simpleObjectsOnScene = new List<GameObject>();
-    
+
     private List<Transform> patientParts = new List<Transform>();
     private List<Transform> MRIParts = new List<Transform>();
+    private List<Transform> heartParts = new List<Transform>();
+    private List<Transform> bonesParts = new List<Transform>();
 
     void Start()
     {
-        var patientPartsTmp = new List<Transform>(patient.gameObject.GetComponentsInChildren<Transform>());
-        var MRIPartsTmp = new List<Transform>(MRI.gameObject.GetComponentsInChildren<Transform>());
-        foreach(var part in patientPartsTmp)
+        var patientPartsTmp = new List<Transform>(patient.GetComponentsInChildren<Transform>());
+        var MRIPartsTmp = new List<Transform>(MRI.GetComponentsInChildren<Transform>());
+        var heartPartsTmp = new List<Transform>(heart.GetComponentsInChildren<Transform>());
+        var bonesPartsTmp = new List<Transform>(bones.GetComponentsInChildren<Transform>());
+
+        foreach (var part in patientPartsTmp)
         {
-            if (part.parent != patient.gameObject.transform.parent)
+            if (part.parent != patient.transform.parent)
                 patientParts.Add(part);
         }
         foreach (var part in MRIPartsTmp)
         {
-            if (part.parent != MRI.gameObject.transform.parent)
+            if (part.parent != MRI.transform.parent)
                 MRIParts.Add(part);
+        }
+        foreach (var part in heartPartsTmp)
+        {
+            if (part.parent != heart.transform.parent)
+                heartParts.Add(part);
+        }
+        foreach (var part in bonesPartsTmp)
+        {
+            if (part.parent != bones.transform.parent)
+                bonesParts.Add(part);
         }
 
         // Instantly disappear at start
-        patient.gameObject.SetActive(false);
-        MRI.gameObject.SetActive(false);
+        patient.SetActive(false);
+        MRI.SetActive(false);
 
         SwitchPatient(false);
         SwitchMRI(false);
         SwitchDicom(false);
         SwitchHeart(false);
         SwitchSimpleObjects(false);
-    }
-
-    private IEnumerator SwapButtons(ObjectControl buttons, bool state)
-    {
-        yield return new WaitForEndOfFrame();
-        buttons.onButton.SetActive(!state);
-        buttons.offButton.SetActive(state);
+        //SwitchBones(false);
     }
 
     public void SwitchDicom(bool state)
     {
-        dicom.gameObject.SetActive(state);
-        StartCoroutine(SwapButtons(dicom,state));
+        dicom.SetActive(state);
     }
-    
+
+    public void SwitchBones(bool state)
+    {
+        StartCoroutine(SwitchBonesCoroutine(state));
+        bonesImage.SetActive(state);
+    }
+
+    private IEnumerator SwitchBonesCoroutine(bool state)
+    {
+        if (state == true)
+            bones.SetActive(state);
+        foreach (var part in bonesParts)
+        {
+            part.gameObject.SetActive(state);
+            yield return null;
+        }
+        if (state == false)
+            bones.SetActive(state);
+    }
 
     public void SwitchHeart(bool state)
     {
-        heart.gameObject.SetActive(state);
-        StartCoroutine(SwapButtons(heart, state));
+        StartCoroutine(SwitchHeartCoroutine(state));
+    }
+
+    private IEnumerator SwitchHeartCoroutine(bool state)
+    {
+        if (state == true)
+            heart.SetActive(state);
+        foreach (var part in heartParts)
+        {
+            part.gameObject.SetActive(state);
+            yield return null;
+        }
+        if (state == false)
+            heart.SetActive(state);
     }
 
     public void SwitchPatient(bool state)
@@ -84,16 +117,14 @@ public class ObjectSetupTableScene : MonoBehaviour {
     private IEnumerator SwitchPatientCoroutine(bool state)
     {
         if (state == true)
-            patient.gameObject.SetActive(state);
+            patient.SetActive(state);
         foreach (var part in patientParts)
         {
             part.gameObject.SetActive(state);
             yield return null;
         }
         if (state == false)
-            patient.gameObject.SetActive(state);
-
-        StartCoroutine(SwapButtons(patient, state));
+            patient.SetActive(state);
     }
 
     public void SwitchMRI(bool state)
@@ -103,17 +134,15 @@ public class ObjectSetupTableScene : MonoBehaviour {
 
     private IEnumerator SwitchMRICoroutine(bool state)
     {
-        if(state == true)
-            MRI.gameObject.SetActive(state);
+        if (state == true)
+            MRI.SetActive(state);
         foreach (var part in MRIParts)
         {
             part.gameObject.SetActive(state);
             yield return null;
         }
         if (state == false)
-            MRI.gameObject.SetActive(state);
-
-        StartCoroutine(SwapButtons(MRI, state));
+            MRI.SetActive(state);
     }
 
     public void SwitchSimpleObjects(bool state)
@@ -144,7 +173,7 @@ public class ObjectSetupTableScene : MonoBehaviour {
             }
             simpleObjectsOnScene = new List<GameObject>();
         }
-            
+
     }
 
 }

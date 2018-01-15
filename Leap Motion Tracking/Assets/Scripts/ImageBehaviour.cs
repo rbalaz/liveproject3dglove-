@@ -19,7 +19,7 @@ public class ImageBehaviour : MonoBehaviour {
         List<Transform> images = new List<Transform>();
         for (int i = 0; i < imageComponents.Length; i++)
         {
-            if (imageComponents[i].parent.name == "AbdomenModel")
+            if (imageComponents[i].parent.name == "AbdomenModel" && imageComponents[i].name.Contains("RawImage"))
                 images.Add(imageComponents[i]);
         }
 
@@ -39,7 +39,6 @@ public class ImageBehaviour : MonoBehaviour {
     {
         for (int l = 0; l < imageComponents.Length; l++)
         {
-            //Debug.Log(imageComponents[l].transform.name);
             string objectName = imageComponents[l].transform.name;
             string[] parts = objectName.Split(' ');
             string imageNumber = parts[1].Substring(1, parts[1].Length - 2);
