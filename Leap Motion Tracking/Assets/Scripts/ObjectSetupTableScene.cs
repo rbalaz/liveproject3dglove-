@@ -64,7 +64,7 @@ public class ObjectSetupTableScene : MonoBehaviour
         SwitchDicom(false);
         SwitchHeart(false);
         SwitchSimpleObjects(false);
-        //SwitchBones(false);
+        SwitchBones(false);
     }
 
     public void SwitchDicom(bool state)
