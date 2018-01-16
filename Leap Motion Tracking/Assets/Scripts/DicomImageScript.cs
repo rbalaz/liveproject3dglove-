@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class DicomImageScript : MonoBehaviour
 {
     private RawImage dicomImage;
-    private int status;
+	private Vector3 startLocation;
 
     // 195 posun
     // 361 snimkov
@@ -15,7 +15,7 @@ public class DicomImageScript : MonoBehaviour
     void Start()
     {
         dicomImage = gameObject.GetComponent<RawImage>();
-        status = 1;
+		startLocation = dicomImage.transform.localPosition;
         setStatus(1);
     }
 
@@ -24,9 +24,9 @@ public class DicomImageScript : MonoBehaviour
         if (dicomImage == null)
         {
             dicomImage = gameObject.GetComponent<RawImage>();
+			startLocation = dicomImage.transform.localPosition;
         }
 
-        Vector3 startPosition = dicomImage.transform.localPosition;
         int intValue = (int)value;
         string imageNumber = intValue + "";
 
@@ -35,9 +35,8 @@ public class DicomImageScript : MonoBehaviour
         Texture2D texture = (Texture2D)Resources.Load(path, typeof(Texture2D));
 
         dicomImage.texture = texture;
-        float xPositionChange = (value - status) * 195 / 361;
-        Vector3 newPosition = new Vector3(startPosition.x + xPositionChange, startPosition.y, startPosition.z);
+        float xPositionChange = (value - 1) * 195 / 361;
+        Vector3 newPosition = new Vector3(startLocation.x + xPositionChange, startLocation.y, startLocation.z);
         dicomImage.transform.localPosition = newPosition;
-        status = intValue;
     }
 }

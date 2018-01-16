@@ -1,0 +1,257 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
+using UnityEngine;
+
+[System.Serializable]
+public class ServerInfo
+{
+    public GameObject IPAddressText;
+    public GameObject leftHandConnectionColor;
+    public GameObject rightHandConnectionColor;
+    public GameObject leftHandConnectionText;
+    public GameObject rightHandConnectionText;
+    public Material connectedMaterial;
+    public Material disconnectedMaterial;
+}
+
+public class SocketServer : MonoBehaviour {
+    public ServerInfo serverInfo;
+
+    void Start () {
+        ServerClass.Stop();
+        Thread.Sleep(100);
+        ServerClass.Initialize(ServerClass.GetLocalIP(), 7999, serverInfo);
+        ServerClass.Run();
+    }
+	
+}
+
+public class ServerClass
+{
+    private static IPAddress localIP;
+    private static int port;
+    private static TcpListener server;
+    private static Thread serverThread;
+    private static Thread listenThread;
+
+    private static ServerInfo serverInfo;
+
+    private static bool _running;
+    public static bool Running
+    {
+        get
+        {
+            return _running;
+        }
+    }
+
+    public static void Initialize(string ip, int in_port, ServerInfo sInfo)
+    {
+        Stop();
+        localIP = IPAddress.Parse(ip);
+        port = in_port;
+        server = null;
+        _running = false;
+        listenThread = null;
+        serverThread = null;
+        serverInfo = sInfo;
+    }
+
+    public static void Run()
+    {
+        Stop();
+        serverThread = new Thread(new ThreadStart(RunServerThread));
+        serverThread.IsBackground = true;
+        serverThread.Start();
+    }
+
+    private static void RunServerThread()
+    {
+        Debug.Log("Server: Starting at " + localIP + ":" + port);
+        Dispatcher.RunOnMainThread(() => serverInfo.IPAddressText.GetComponent<TextMesh>().text = (localIP.ToString() + ":" + port.ToString()));
+
+        try
+        {
+            // Start server
+            server = new TcpListener(localIP, port);
+            server.Start();
+
+            Debug.Log("Server: Waiting for client to connect...");
+            // Start listening for clients
+            listenThread = new Thread(new ThreadStart(Listen));
+            listenThread.IsBackground = true;
+            listenThread.Start();
+
+            Thread.Sleep(100);
+            _running = true;
+
+        }
+        catch (Exception ex)
+        {
+            Debug.LogException(ex);
+            Restart();
+        }
+    }
+
+    private static void Listen()
+    {
+        try
+        {
+            // Listen for clients
+            while (Thread.CurrentThread.IsAlive)
+            {
+                // Wait for new client to connect (blocking function)
+                TcpClient client = server.AcceptTcpClient();
+
+                Debug.Log("Server: Client connected with IP " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
+                // Handle client in new thread
+                Thread handler = new Thread(() => HandleClient(client));
+                handler.IsBackground = true;
+                handler.Start();
+            }
+        }
+        catch (Exception ex)
+        {
+            // SocketException
+            // Usually throws exception if thread is aborted when waiting for client
+            Debug.LogException(ex);
+            Restart();
+        }
+    }
+
+    private static void HandleClient(TcpClient client)
+    {
+        // Get a stream object
+        NetworkStream stream = client.GetStream();
+        TouchFinger[] fingerData = null;
+        bool isLeftHand = false;
+
+        try
+        {
+            byte[] incMsg = new byte[1024];
+            int length;
+            while ((length = stream.Read(incMsg, 0, incMsg.Length)) == 0); // Wait for message
+            string incoming = Encoding.ASCII.GetString(incMsg, 0, length);
+            if (incoming == "l")
+            {
+                Debug.Log("Sending LEFT hand data to client " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
+                fingerData = TouchDetection.touchFingersLeft;
+                isLeftHand = true;
+            }
+            else
+            {
+                Debug.Log("Sending RIGHT hand data to client " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
+                fingerData = TouchDetection.touchFingersRight;
+                isLeftHand = false;
+            }
+            DisplayInfo(true, isLeftHand);
+
+            string lastData = "";
+            while (true)
+            {
+                // Create control string
+                StringBuilder control_str = new StringBuilder();
+
+                for (int f = 0; f < fingerData.Length; f++)
+                {
+                    control_str.Append(fingerData[f].touching ? "100" : "0");
+
+                    if (f == fingerData.Length-1)
+                        control_str.Append("xy");
+                    else
+                        control_str.Append(",");
+                }
+                
+
+                string newData = control_str.ToString();
+                if (newData != lastData)
+                {
+                    // Send data
+                    byte[] msg = Encoding.ASCII.GetBytes(newData);
+                    stream.Write(msg, 0, msg.Length);
+                    //Debug.Log(newData);
+
+                    // Save
+                    lastData = newData;
+                }
+
+                Thread.Sleep(50);
+            }
+        }
+        catch (Exception ex)
+        {
+            // System.IO.IOException
+            // Usually throws exception when client disconnects during transmit
+            Debug.LogException(ex);
+            DisplayInfo(false, isLeftHand);
+        }
+        DisplayInfo(false, isLeftHand);
+        // End connection
+        stream.Close();
+        client.Close();
+    }
+
+    public static void Stop()
+    {
+        if (Running)
+        {
+            if (server != null)
+            {
+                _running = false;
+                server.Stop(); // Stop listening
+            }
+        }
+        if (serverThread != null && serverThread.IsAlive)
+        {
+            serverThread.Abort();
+        }
+        if (listenThread != null && listenThread.IsAlive)
+        {
+            listenThread.Abort();
+        }
+    }
+
+    public static void Restart()
+    {
+        Stop();
+        Thread.Sleep(1000);
+        Run();
+    }
+
+    public static string GetLocalIP()
+    {
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (var ip in host.AddressList)
+        {
+            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            {
+                return ip.ToString();
+            }
+        }
+        Debug.LogError("Server: Cannot find IP address");
+        return null;
+    }
+
+    public static void DisplayInfo(bool connected, bool isLeftHand)
+    {
+        string message = connected ? "Connected" : "Not connected";
+        Material mat = connected ? serverInfo.connectedMaterial : serverInfo.disconnectedMaterial;
+
+        if (isLeftHand)
+        {
+            Dispatcher.RunOnMainThread(() => serverInfo.leftHandConnectionText.GetComponent<TextMesh>().text = message);
+            Dispatcher.RunOnMainThread(() => serverInfo.leftHandConnectionColor.GetComponent<Renderer>().material.color = mat.color);
+        }
+        else
+        {
+            Dispatcher.RunOnMainThread(() => serverInfo.rightHandConnectionText.GetComponent<TextMesh>().text = message);
+            Dispatcher.RunOnMainThread(() => serverInfo.rightHandConnectionColor.GetComponent<Renderer>().material.color = mat.color);
+        }
+           
+    }
+}
