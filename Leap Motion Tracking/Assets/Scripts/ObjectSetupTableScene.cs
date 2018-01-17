@@ -19,12 +19,12 @@ public class ObjectControl
 
 public class ObjectSetupTableScene : MonoBehaviour {
 
-    public ObjectControl dicom;
     public ObjectControl patient;
     public ObjectControl heart;
     public ObjectControl MRI;
-	public ObjectControl bones;
-	public GameObject bonesImage;
+	public ObjectControl dicom;
+	public GameObject dicomBones;
+    public GameObject dicomSlider;
     public List<SimpleObjectList> simpleObjects;
 
     private List<GameObject> simpleObjectsOnScene = new List<GameObject>();
@@ -38,7 +38,7 @@ public class ObjectSetupTableScene : MonoBehaviour {
     {
         var patientPartsTmp = new List<Transform>(patient.gameObject.GetComponentsInChildren<Transform>());
         var MRIPartsTmp = new List<Transform>(MRI.gameObject.GetComponentsInChildren<Transform>());
-		var bonesPartsTmp = new List<Transform>(bones.gameObject.GetComponentsInChildren<Transform>());
+		var bonesPartsTmp = new List<Transform>(dicomBones.GetComponentsInChildren<Transform>());
         foreach(var part in patientPartsTmp)
         {
             if (part.parent != patient.gameObject.transform.parent)
@@ -51,7 +51,7 @@ public class ObjectSetupTableScene : MonoBehaviour {
         }
 		foreach (var part in bonesPartsTmp)
         {
-            if (part.parent != bones.gameObject.transform.parent)
+            if (part.parent != dicomBones.transform.parent)
                 bonesParts.Add(part);
         }
 
@@ -64,7 +64,7 @@ public class ObjectSetupTableScene : MonoBehaviour {
         SwitchDicom(false);
         SwitchHeart(false);
         SwitchSimpleObjects(false);
-		SwitchBones(false);
+		//SwitchBones(false);
     }
 
     private IEnumerator SwapButtons(ObjectControl buttons, bool state)
@@ -73,36 +73,29 @@ public class ObjectSetupTableScene : MonoBehaviour {
         buttons.onButton.SetActive(!state);
         buttons.offButton.SetActive(state);
     }
-	
-	
-	public void SwitchBones(bool state)
-    {
-        StartCoroutine(SwitchPatientCoroutine(state));
-        bonesImage.SetActive(state);
-    }
 
-    private IEnumerator SwitchBonesCoroutine(bool state)
-     {
-        
-        if (state == true)
-            bones.gameObject.SetActive(state);
-        foreach (var part in bonesParts)
-        {
-            part.gameObject.SetActive(state);
-            yield return null;
-		}
-        if (state == false)
-            bones.gameObject.SetActive(state);
-		
-		StartCoroutine(SwapButtons(bones,state));
-    }
+
 
     public void SwitchDicom(bool state)
     {
         dicom.gameObject.SetActive(state);
+        StartCoroutine(SwitchBonesCoroutine(state));
         StartCoroutine(SwapButtons(dicom,state));
     }
-    
+    private IEnumerator SwitchBonesCoroutine(bool state)
+    {
+
+        if (state == true)
+            dicomBones.SetActive(state);
+        foreach (var part in bonesParts)
+        {
+            part.gameObject.SetActive(state);
+            yield return null;
+        }
+        if (state == false)
+            dicomBones.SetActive(state);
+    }
+
 
     public void SwitchHeart(bool state)
     {
