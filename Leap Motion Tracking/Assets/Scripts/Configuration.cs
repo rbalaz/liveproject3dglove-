@@ -94,8 +94,8 @@ public class Configuration : MonoBehaviour {
 	{
 		
 		StartCoroutine(AsyncLoader());
-		//SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-		
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        ServerClass.UpdateStatus();
 	}
 	
 	public IEnumerator AsyncLoader(){

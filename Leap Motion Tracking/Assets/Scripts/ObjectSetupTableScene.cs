@@ -59,12 +59,18 @@ public class ObjectSetupTableScene : MonoBehaviour {
         patient.gameObject.SetActive(false);
         MRI.gameObject.SetActive(false);
 
+        DisableAll();
+        SwitchSimpleObjects(false);
+    }
+
+    private void DisableAll()
+    {
         SwitchPatient(false);
         SwitchMRI(false);
         SwitchDicom(false);
         SwitchHeart(false);
-        SwitchSimpleObjects(false);
-		//SwitchBones(false);
+        //SwitchSimpleObjects(false);
+        //SwitchBones(false);
     }
 
     private IEnumerator SwapButtons(ObjectControl buttons, bool state)
@@ -78,13 +84,14 @@ public class ObjectSetupTableScene : MonoBehaviour {
 
     public void SwitchDicom(bool state)
     {
+        DisableAll();
+
         dicom.gameObject.SetActive(state);
         StartCoroutine(SwitchBonesCoroutine(state));
         StartCoroutine(SwapButtons(dicom,state));
     }
     private IEnumerator SwitchBonesCoroutine(bool state)
     {
-
         if (state == true)
             dicomBones.SetActive(state);
         foreach (var part in bonesParts)
@@ -99,12 +106,16 @@ public class ObjectSetupTableScene : MonoBehaviour {
 
     public void SwitchHeart(bool state)
     {
+        DisableAll();
+
         heart.gameObject.SetActive(state);
         StartCoroutine(SwapButtons(heart, state));
     }
 
     public void SwitchPatient(bool state)
     {
+        DisableAll();
+
         StartCoroutine(SwitchPatientCoroutine(state));
     }
 
@@ -125,6 +136,8 @@ public class ObjectSetupTableScene : MonoBehaviour {
 
     public void SwitchMRI(bool state)
     {
+        DisableAll();
+
         StartCoroutine(SwitchMRICoroutine(state));
     }
 

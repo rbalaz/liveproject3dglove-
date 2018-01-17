@@ -41,6 +41,8 @@ public class ServerClass
 
     private static ServerInfo serverInfo;
 
+    private static bool rightHandConnected;
+    private static bool leftHandConnected;
     private static bool _running;
     public static bool Running
     {
@@ -73,7 +75,7 @@ public class ServerClass
     private static void RunServerThread()
     {
         Debug.Log("Server: Starting at " + localIP + ":" + port);
-        Dispatcher.RunOnMainThread(() => serverInfo.IPAddressText.GetComponent<TextMesh>().text = (localIP.ToString() + ":" + port.ToString()));
+        UpdateStatus();
 
         try
         {
@@ -142,14 +144,16 @@ public class ServerClass
                 Debug.Log("Sending LEFT hand data to client " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
                 fingerData = TouchDetection.touchFingersLeft;
                 isLeftHand = true;
+                leftHandConnected = true;
             }
             else
             {
                 Debug.Log("Sending RIGHT hand data to client " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
                 fingerData = TouchDetection.touchFingersRight;
                 isLeftHand = false;
+                rightHandConnected = true;
             }
-            DisplayInfo(true, isLeftHand);
+            UpdateStatus();
 
             string lastData = "";
             while (true)
@@ -188,9 +192,14 @@ public class ServerClass
             // System.IO.IOException
             // Usually throws exception when client disconnects during transmit
             Debug.LogException(ex);
-            DisplayInfo(false, isLeftHand);
         }
-        DisplayInfo(false, isLeftHand);
+        if (isLeftHand)
+            leftHandConnected = false;
+        else
+            rightHandConnected = false;
+
+        UpdateStatus();
+
         // End connection
         stream.Close();
         client.Close();
@@ -237,21 +246,23 @@ public class ServerClass
         return null;
     }
 
-    public static void DisplayInfo(bool connected, bool isLeftHand)
+    public static void UpdateStatus()
     {
-        string message = connected ? "Connected" : "Not connected";
-        Material mat = connected ? serverInfo.connectedMaterial : serverInfo.disconnectedMaterial;
+        // IP display
+        Dispatcher.RunOnMainThread(() => serverInfo.IPAddressText.GetComponent<TextMesh>().text = (localIP.ToString() + ":" + port.ToString()));
 
-        if (isLeftHand)
-        {
-            Dispatcher.RunOnMainThread(() => serverInfo.leftHandConnectionText.GetComponent<TextMesh>().text = message);
-            Dispatcher.RunOnMainThread(() => serverInfo.leftHandConnectionColor.GetComponent<Renderer>().material.color = mat.color);
-        }
-        else
-        {
-            Dispatcher.RunOnMainThread(() => serverInfo.rightHandConnectionText.GetComponent<TextMesh>().text = message);
-            Dispatcher.RunOnMainThread(() => serverInfo.rightHandConnectionColor.GetComponent<Renderer>().material.color = mat.color);
-        }
-           
+        // Get correct strings and materials
+        string leftMessage = leftHandConnected ? "Connected" : "Not connected";
+        Material leftMat = leftHandConnected ? serverInfo.connectedMaterial : serverInfo.disconnectedMaterial;
+        string rightMessage = rightHandConnected ? "Connected" : "Not connected";
+        Material rightMat = rightHandConnected ? serverInfo.connectedMaterial : serverInfo.disconnectedMaterial;
+
+        // Update display for both hands
+        Dispatcher.RunOnMainThread(() => serverInfo.leftHandConnectionText.GetComponent<TextMesh>().text = leftMessage);
+        Dispatcher.RunOnMainThread(() => serverInfo.leftHandConnectionColor.GetComponent<Renderer>().material.color = leftMat.color);
+
+        Dispatcher.RunOnMainThread(() => serverInfo.rightHandConnectionText.GetComponent<TextMesh>().text = rightMessage);
+        Dispatcher.RunOnMainThread(() => serverInfo.rightHandConnectionColor.GetComponent<Renderer>().material.color = rightMat.color);
     }
+
 }
