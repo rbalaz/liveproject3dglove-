@@ -23,8 +23,8 @@ public class ObjectSetupTableScene : MonoBehaviour {
     public ObjectControl heart;
     public ObjectControl MRI;
 	public ObjectControl dicom;
-	public GameObject dicomBones;
-    public GameObject dicomSlider;
+    public GameObject dicomSlider1;
+    public GameObject dicomSlider2;
     public List<SimpleObjectList> simpleObjects;
 
     private List<GameObject> simpleObjectsOnScene = new List<GameObject>();
@@ -38,7 +38,7 @@ public class ObjectSetupTableScene : MonoBehaviour {
     {
         var patientPartsTmp = new List<Transform>(patient.gameObject.GetComponentsInChildren<Transform>());
         var MRIPartsTmp = new List<Transform>(MRI.gameObject.GetComponentsInChildren<Transform>());
-		var bonesPartsTmp = new List<Transform>(dicomBones.GetComponentsInChildren<Transform>());
+		var bonesPartsTmp = new List<Transform>(dicom.gameObject.GetComponentsInChildren<Transform>());
         foreach(var part in patientPartsTmp)
         {
             if (part.parent != patient.gameObject.transform.parent)
@@ -51,7 +51,7 @@ public class ObjectSetupTableScene : MonoBehaviour {
         }
 		foreach (var part in bonesPartsTmp)
         {
-            if (part.parent != dicomBones.transform.parent)
+            if (part.parent != dicom.gameObject.transform.parent)
                 bonesParts.Add(part);
         }
 
@@ -59,19 +59,13 @@ public class ObjectSetupTableScene : MonoBehaviour {
         patient.gameObject.SetActive(false);
         MRI.gameObject.SetActive(false);
 
-        DisableAll();
+        SwitchMRI(false);
+        SwitchPatient(false);
+        SwitchHeart(false);
+		SwitchDicom(false);
         SwitchSimpleObjects(false);
     }
 
-    private void DisableAll()
-    {
-        SwitchPatient(false);
-        SwitchMRI(false);
-        SwitchDicom(false);
-        SwitchHeart(false);
-        //SwitchSimpleObjects(false);
-        //SwitchBones(false);
-    }
 
     private IEnumerator SwapButtons(ObjectControl buttons, bool state)
     {
@@ -80,42 +74,71 @@ public class ObjectSetupTableScene : MonoBehaviour {
         buttons.offButton.SetActive(state);
     }
 
+	public void ButtonDicom(bool state){
+		SwitchMRI(false);
+        SwitchPatient(false);
+        SwitchHeart(false);
+		
+		SwitchDicom(state);
+	}
+	public void ButtonPatient(bool state){
+		SwitchMRI(false);
+        SwitchDicom(false);
+        SwitchHeart(false);
+		
+		SwitchPatient(state);
+	}
+	public void ButtonHeart(bool state){
+		SwitchMRI(false);
+        SwitchPatient(false);
+		SwitchDicom(false);
+		
+		SwitchHeart(state);
+	}
+	public void ButtonMRI(bool state){
+        SwitchPatient(false);
+        SwitchHeart(false);
+		SwitchDicom(false);
+		
+		SwitchMRI(state);
+	}
+	public void ButtonSimpleObjects(bool state){
+		SwitchSimpleObjects(state);
+	}	
+	
+	
 
 
     public void SwitchDicom(bool state)
     {
-        DisableAll();
-
         dicom.gameObject.SetActive(state);
+		dicomSlider1.gameObject.SetActive(state);
+        dicomSlider2.gameObject.SetActive(state);
         StartCoroutine(SwitchBonesCoroutine(state));
         StartCoroutine(SwapButtons(dicom,state));
     }
     private IEnumerator SwitchBonesCoroutine(bool state)
     {
         if (state == true)
-            dicomBones.SetActive(state);
+            dicom.gameObject.SetActive(state);
         foreach (var part in bonesParts)
         {
             part.gameObject.SetActive(state);
             yield return null;
         }
         if (state == false)
-            dicomBones.SetActive(state);
+            dicom.gameObject.SetActive(state);
     }
 
 
     public void SwitchHeart(bool state)
     {
-        DisableAll();
-
         heart.gameObject.SetActive(state);
         StartCoroutine(SwapButtons(heart, state));
     }
 
     public void SwitchPatient(bool state)
     {
-        DisableAll();
-
         StartCoroutine(SwitchPatientCoroutine(state));
     }
 
@@ -136,8 +159,6 @@ public class ObjectSetupTableScene : MonoBehaviour {
 
     public void SwitchMRI(bool state)
     {
-        DisableAll();
-
         StartCoroutine(SwitchMRICoroutine(state));
     }
 
@@ -185,6 +206,15 @@ public class ObjectSetupTableScene : MonoBehaviour {
             simpleObjectsOnScene = new List<GameObject>();
         }
             
+    }
+	
+	
+	
+	
+	public void RotateDicom(float value){
+        
+        var rot = dicom.gameObject.transform.eulerAngles;
+        dicom.gameObject.transform.eulerAngles = new Vector3(rot.x, value, rot.z);
     }
 
 }

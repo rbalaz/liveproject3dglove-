@@ -163,7 +163,7 @@ public class ServerClass
 
                 for (int f = 0; f < fingerData.Length; f++)
                 {
-                    control_str.Append(fingerData[f].touching ? "100" : "0");
+                    control_str.Append(fingerData[f].touching ? "60" : "120");
 
                     if (f == fingerData.Length-1)
                         control_str.Append("xy");
@@ -185,6 +185,13 @@ public class ServerClass
                 }
 
                 Thread.Sleep(50);
+
+                if (isLeftHand)
+                    leftHandConnected = true;
+                else
+                    rightHandConnected = true;
+
+                UpdateStatus();
             }
         }
         catch (Exception ex)
@@ -192,6 +199,12 @@ public class ServerClass
             // System.IO.IOException
             // Usually throws exception when client disconnects during transmit
             Debug.LogException(ex);
+            if (isLeftHand)
+                leftHandConnected = false;
+            else
+                rightHandConnected = false;
+
+            UpdateStatus();
         }
         if (isLeftHand)
             leftHandConnected = false;
