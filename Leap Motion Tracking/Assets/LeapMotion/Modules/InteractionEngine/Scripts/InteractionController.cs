@@ -1145,19 +1145,8 @@ namespace Leap.Unity.Interaction {
                                                                _softContactColliderBuffer,
                                                                manager.GetInteractionLayerMask(),
                                                                QueryTriggerInteraction.Ignore);
-
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-           // contactBone.UpdateTouchStatus(numCollisions > 0);
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
             for (int i = 0; i < numCollisions; i++) {
               //NotifySoftContactOverlap(contactBone, _softContactColliderBuffer[i]);
-
-              //Debug.Log(_softContactColliderBuffer[0].gameObject.name);
 
               // Skip soft contact if the object is ignoring contact
               if (_softContactColliderBuffer[i].attachedRigidbody == null) continue;

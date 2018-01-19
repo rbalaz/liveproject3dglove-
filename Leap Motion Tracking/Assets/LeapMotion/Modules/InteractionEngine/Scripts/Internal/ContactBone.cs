@@ -109,74 +109,15 @@ namespace Leap.Unity.Interaction {
 
     Dictionary<IInteractionBehaviour, float> contactingInteractionBehaviours = new Dictionary<IInteractionBehaviour, float>();
 
-
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // UPRAVENY KOD
-    private TouchFingerType fingerType;
-    private bool isLeftHand;
-    private int controllerLayer;
-    private int groundLayer;
     void Start() {
       interactionController.manager.contactBoneBodies[rigidbody] = this;
-
-      if (this.transform.parent.name.Contains("Left")) isLeftHand = true;
-      else isLeftHand = false;
-
-      fingerType = TouchFingerType.Other;
-      if (this.name.Contains("Distal")) {
-        if (this.name.Contains("Thumb")) fingerType = TouchFingerType.ThumbDistal;
-        if (this.name.Contains("Index")) fingerType = TouchFingerType.IndexDistal;
-        if (this.name.Contains("Middle")) fingerType = TouchFingerType.MidleDistal;
-        if (this.name.Contains("Ring")) fingerType = TouchFingerType.RingDistal;
-        if (this.name.Contains("Pinky")) fingerType = TouchFingerType.PinkyDistal;
-      }
-      controllerLayer = interactionController.manager.contactBoneLayer.layerIndex;
-      groundLayer = LayerMask.NameToLayer("GroundLayer");
     }
-    
-    private void Update()
-    {
-        if (this.fingerType != TouchFingerType.Other && collider is CapsuleCollider)
-        { 
-            var boneCapsule = collider as CapsuleCollider;
-
-            Vector3 point0, point1;
-            boneCapsule.GetCapsulePoints(out point0, out point1);
-            
-            var buffer = Physics.OverlapCapsule(point0, point1, transform.lossyScale.x * boneCapsule.radius);
-            
-            
-            var colliders = new List<Collider>();
-            foreach (var col in buffer)
-            {
-                    if (col.gameObject.layer != controllerLayer) colliders.Add(col);
-                    if (col.gameObject.layer == groundLayer) AutoHeight.OnHandContact();
-            }
-
-            UpdateTouchStatus(colliders.Count > 0);
-        }
-    }
-
-    private bool lastTouchStatus = false;
-    public void UpdateTouchStatus(bool touching)
-    {
-        if (this.fingerType != TouchFingerType.Other && lastTouchStatus != touching)
-        {
-            TouchDetection.UpdateFinger(this.fingerType, isLeftHand, touching);
-            lastTouchStatus = touching;
-        }
-    }
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     void OnDestroy() {
       interactionController.manager.contactBoneBodies.Remove(rigidbody);
     }
 
-    void OnCollisionEnter(Collision collision) {		
+    void OnCollisionEnter(Collision collision) {
       bool hitNonInteractionObject = false;
 
       if (collision.rigidbody == null) {
@@ -231,7 +172,7 @@ namespace Leap.Unity.Interaction {
     }
 
     private void OnCollisionStay(Collision collision) {
-	  if (collision.rigidbody == null) { return; }
+      if (collision.rigidbody == null) { return; }
 
       IInteractionBehaviour interactionObj;
       float timeEntered = 0;
@@ -246,7 +187,7 @@ namespace Leap.Unity.Interaction {
       }
     }
 
-    void OnCollisionExit(Collision collision) {		
+    void OnCollisionExit(Collision collision) {
       if (collision.rigidbody == null) { return; }
 
       IInteractionBehaviour interactionObj;

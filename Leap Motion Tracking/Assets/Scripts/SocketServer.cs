@@ -142,14 +142,14 @@ public class ServerClass
             if (incoming == "l")
             {
                 Debug.Log("Sending LEFT hand data to client " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
-                fingerData = TouchDetection.touchFingersLeft;
+                fingerData = TouchDetector.touchFingersLeft;
                 isLeftHand = true;
                 leftHandConnected = true;
             }
             else
             {
                 Debug.Log("Sending RIGHT hand data to client " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
-                fingerData = TouchDetection.touchFingersRight;
+                fingerData = TouchDetector.touchFingersRight;
                 isLeftHand = false;
                 rightHandConnected = true;
             }
@@ -163,7 +163,8 @@ public class ServerClass
 
                 for (int f = 0; f < fingerData.Length; f++)
                 {
-                    control_str.Append(fingerData[f].touching ? "60" : "120");
+                    var force = fingerData[f].Force; 
+                    control_str.Append(Math.Floor(180 - (force * (120 - 60) / (100 - 0) + 60))); // <0-100> => <120-60>
 
                     if (f == fingerData.Length-1)
                         control_str.Append("xy");

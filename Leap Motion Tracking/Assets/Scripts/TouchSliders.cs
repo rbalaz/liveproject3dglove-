@@ -1,3 +1,4 @@
+using Leap;
 using Leap.Unity.Interaction;
 using System;
 using System.Collections;
@@ -31,7 +32,7 @@ public class TouchSliders : MonoBehaviour
 
     public void Start()
     {
-        TouchDetection.OnTouchValueChange += ValueChanged;
+        TouchDetector.OnTouchValueChange += ValueChanged;
 
         leftSliders = new Slider[] {
             leftHandSliders.sliderThumb,
@@ -49,15 +50,15 @@ public class TouchSliders : MonoBehaviour
         };
     }
 
-    public void ValueChanged(TouchFingerType fingerType, bool isLeftHand, bool touching)
+    public void ValueChanged(Finger.FingerType fingerType, bool isLeftHand, float force)
     {
         if (isLeftHand)
         {
-            leftSliders[(int)fingerType].value = touching ? 100 : 0;
+            leftSliders[(int)fingerType].value = force;
         }
         else
         {
-            rightSliders[(int)fingerType].value = touching ? 100 : 0;
+            rightSliders[(int)fingerType].value = force;
         }
     }
 }
