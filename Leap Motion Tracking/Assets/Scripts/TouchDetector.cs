@@ -100,8 +100,7 @@ public class TouchDetector : MonoBehaviour {
         if (finger.forces.Count != 0)
         {
             finger.forces.Sort();
-            finger.Force = finger.forces[0]; // Select maximum
-            if (finger.Force > 100) finger.Force = 100;
+            finger.Force = finger.forces[finger.forces.Count - 1]; // Select maximum
         }
         else
         {
