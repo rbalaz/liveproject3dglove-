@@ -41,38 +41,28 @@ public class TouchDetector : MonoBehaviour {
     private static int controllerLayer;
     private static int groundLayer;
 
-    private static TouchDetector _instance;
-
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    private static void Initialize()
-    {
-        if (_instance == null)
-        {
-            _instance = new GameObject("TouchDetector").AddComponent<TouchDetector>();
-            DontDestroyOnLoad(_instance.gameObject);
-            touchFingersLeft = new TouchFinger[] {
-                new TouchFinger { fingerType = Finger.FingerType.TYPE_THUMB },
-                new TouchFinger { fingerType = Finger.FingerType.TYPE_INDEX },
-                new TouchFinger { fingerType = Finger.FingerType.TYPE_MIDDLE },
-                new TouchFinger { fingerType = Finger.FingerType.TYPE_RING },
-                new TouchFinger { fingerType = Finger.FingerType.TYPE_PINKY }
-            };
-            touchFingersRight = new TouchFinger[] {
-                new TouchFinger { fingerType = Finger.FingerType.TYPE_THUMB },
-                new TouchFinger { fingerType = Finger.FingerType.TYPE_INDEX },
-                new TouchFinger { fingerType = Finger.FingerType.TYPE_MIDDLE },
-                new TouchFinger { fingerType = Finger.FingerType.TYPE_RING },
-                new TouchFinger { fingerType = Finger.FingerType.TYPE_PINKY }
-            };
-        }
-    }
-
     void Start()
     {
+        touchFingersLeft = new TouchFinger[] {
+                new TouchFinger { fingerType = Finger.FingerType.TYPE_THUMB },
+                new TouchFinger { fingerType = Finger.FingerType.TYPE_INDEX },
+                new TouchFinger { fingerType = Finger.FingerType.TYPE_MIDDLE },
+                new TouchFinger { fingerType = Finger.FingerType.TYPE_RING },
+                new TouchFinger { fingerType = Finger.FingerType.TYPE_PINKY }
+            };
+        touchFingersRight = new TouchFinger[] {
+                new TouchFinger { fingerType = Finger.FingerType.TYPE_THUMB },
+                new TouchFinger { fingerType = Finger.FingerType.TYPE_INDEX },
+                new TouchFinger { fingerType = Finger.FingerType.TYPE_MIDDLE },
+                new TouchFinger { fingerType = Finger.FingerType.TYPE_RING },
+                new TouchFinger { fingerType = Finger.FingerType.TYPE_PINKY }
+            };
+
         manager = InteractionManager.instance;
         controllerLayer = manager.contactBoneLayer.layerIndex;
         groundLayer = LayerMask.NameToLayer("GroundLayer");
     }
+
 
     void Update()
     {

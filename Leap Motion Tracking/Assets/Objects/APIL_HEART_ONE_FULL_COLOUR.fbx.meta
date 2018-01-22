@@ -1,0 +1,207 @@
+fileFormatVersion: 2
+guid: 360f751c48068d546898969f3fd70033
+timeCreated: 1516628453
+licenseType: Free
+ModelImporter:
+  serializedVersion: 21
+  fileIDToRecycleName:
+    100000: APIL HEART 1 AORTA Edit
+    100002: APIL HEART 1 AORTA Edit_MeshPart0
+    100004: APIL HEART 1 AORTA Edit_MeshPart1
+    100006: APIL HEART 1 LA Edit
+    100008: APIL HEART 1 LA Edit_MeshPart0
+    100010: APIL HEART 1 LA Edit_MeshPart1
+    100012: APIL HEART 1 LA Edit_MeshPart2
+    100014: APIL HEART 1 LV Edit
+    100016: APIL HEART 1 LV Edit_MeshPart0
+    100018: APIL HEART 1 LV Edit_MeshPart1
+    100020: APIL HEART 1 LV Edit_MeshPart2
+    100022: APIL HEART 1 LV Edit_MeshPart3
+    100024: APIL HEART 1 LV Edit_MeshPart4
+    100026: APIL HEART 1 LV Edit_MeshPart5
+    100028: APIL HEART 1 LV Edit_MeshPart6
+    100030: APIL HEART 1 LV Edit_MeshPart7
+    100032: APIL HEART 1 RARV Edit
+    100034: APIL HEART 1 RARV Edit_MeshPart0
+    100036: APIL HEART 1 RARV Edit_MeshPart1
+    100038: APIL HEART 1 RARV Edit_MeshPart2
+    100040: APIL HEART 1 RARV Edit_MeshPart3
+    100042: //RootNode
+    100044: Hemi
+    100046: Hemi.001
+    100048: Hemi.002
+    100050: Hemi.003
+    100052: Hemi.004
+    100054: Hemi.005
+    100056: Sun
+    100058: Sun.001
+    100060: Sun.002
+    100062: Sun.003
+    400000: APIL HEART 1 AORTA Edit
+    400002: APIL HEART 1 AORTA Edit_MeshPart0
+    400004: APIL HEART 1 AORTA Edit_MeshPart1
+    400006: APIL HEART 1 LA Edit
+    400008: APIL HEART 1 LA Edit_MeshPart0
+    400010: APIL HEART 1 LA Edit_MeshPart1
+    400012: APIL HEART 1 LA Edit_MeshPart2
+    400014: APIL HEART 1 LV Edit
+    400016: APIL HEART 1 LV Edit_MeshPart0
+    400018: APIL HEART 1 LV Edit_MeshPart1
+    400020: APIL HEART 1 LV Edit_MeshPart2
+    400022: APIL HEART 1 LV Edit_MeshPart3
+    400024: APIL HEART 1 LV Edit_MeshPart4
+    400026: APIL HEART 1 LV Edit_MeshPart5
+    400028: APIL HEART 1 LV Edit_MeshPart6
+    400030: APIL HEART 1 LV Edit_MeshPart7
+    400032: APIL HEART 1 RARV Edit
+    400034: APIL HEART 1 RARV Edit_MeshPart0
+    400036: APIL HEART 1 RARV Edit_MeshPart1
+    400038: APIL HEART 1 RARV Edit_MeshPart2
+    400040: APIL HEART 1 RARV Edit_MeshPart3
+    400042: //RootNode
+    400044: Hemi
+    400046: Hemi.001
+    400048: Hemi.002
+    400050: Hemi.003
+    400052: Hemi.004
+    400054: Hemi.005
+    400056: Sun
+    400058: Sun.001
+    400060: Sun.002
+    400062: Sun.003
+    2300000: APIL HEART 1 AORTA Edit_MeshPart0
+    2300002: APIL HEART 1 AORTA Edit_MeshPart1
+    2300004: APIL HEART 1 LA Edit_MeshPart0
+    2300006: APIL HEART 1 LA Edit_MeshPart1
+    2300008: APIL HEART 1 LA Edit_MeshPart2
+    2300010: APIL HEART 1 LV Edit_MeshPart0
+    2300012: APIL HEART 1 LV Edit_MeshPart1
+    2300014: APIL HEART 1 LV Edit_MeshPart2
+    2300016: APIL HEART 1 LV Edit_MeshPart3
+    2300018: APIL HEART 1 LV Edit_MeshPart4
+    2300020: APIL HEART 1 LV Edit_MeshPart5
+    2300022: APIL HEART 1 LV Edit_MeshPart6
+    2300024: APIL HEART 1 LV Edit_MeshPart7
+    2300026: APIL HEART 1 RARV Edit_MeshPart0
+    2300028: APIL HEART 1 RARV Edit_MeshPart1
+    2300030: APIL HEART 1 RARV Edit_MeshPart2
+    2300032: APIL HEART 1 RARV Edit_MeshPart3
+    3300000: APIL HEART 1 AORTA Edit_MeshPart0
+    3300002: APIL HEART 1 AORTA Edit_MeshPart1
+    3300004: APIL HEART 1 LA Edit_MeshPart0
+    3300006: APIL HEART 1 LA Edit_MeshPart1
+    3300008: APIL HEART 1 LA Edit_MeshPart2
+    3300010: APIL HEART 1 LV Edit_MeshPart0
+    3300012: APIL HEART 1 LV Edit_MeshPart1
+    3300014: APIL HEART 1 LV Edit_MeshPart2
+    3300016: APIL HEART 1 LV Edit_MeshPart3
+    3300018: APIL HEART 1 LV Edit_MeshPart4
+    3300020: APIL HEART 1 LV Edit_MeshPart5
+    3300022: APIL HEART 1 LV Edit_MeshPart6
+    3300024: APIL HEART 1 LV Edit_MeshPart7
+    3300026: APIL HEART 1 RARV Edit_MeshPart0
+    3300028: APIL HEART 1 RARV Edit_MeshPart1
+    3300030: APIL HEART 1 RARV Edit_MeshPart2
+    3300032: APIL HEART 1 RARV Edit_MeshPart3
+    4300000: APIL HEART 1 LV Edit_MeshPart0
+    4300002: APIL HEART 1 LV Edit_MeshPart1
+    4300004: APIL HEART 1 LV Edit_MeshPart2
+    4300006: APIL HEART 1 LV Edit_MeshPart3
+    4300008: APIL HEART 1 LV Edit_MeshPart4
+    4300010: APIL HEART 1 LV Edit_MeshPart5
+    4300012: APIL HEART 1 LV Edit_MeshPart6
+    4300014: APIL HEART 1 LV Edit_MeshPart7
+    4300016: APIL HEART 1 LA Edit_MeshPart0
+    4300018: APIL HEART 1 LA Edit_MeshPart1
+    4300020: APIL HEART 1 LA Edit_MeshPart2
+    4300022: APIL HEART 1 AORTA Edit_MeshPart0
+    4300024: APIL HEART 1 AORTA Edit_MeshPart1
+    4300026: APIL HEART 1 RARV Edit_MeshPart0
+    4300028: APIL HEART 1 RARV Edit_MeshPart1
+    4300030: APIL HEART 1 RARV Edit_MeshPart2
+    4300032: APIL HEART 1 RARV Edit_MeshPart3
+    10800000: Hemi
+    10800002: Hemi.001
+    10800004: Hemi.002
+    10800006: Hemi.003
+    10800008: Hemi.004
+    10800010: Hemi.005
+    10800012: Sun
+    10800014: Sun.001
+    10800016: Sun.002
+    10800018: Sun.003
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

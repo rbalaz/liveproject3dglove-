@@ -28,7 +28,12 @@ public class SocketServer : MonoBehaviour {
         ServerClass.Initialize(ServerClass.GetLocalIP(), 7999, serverInfo);
         ServerClass.Run();
     }
-	
+
+    void OnApplicationQuit()
+    {
+        ServerClass.Stop();
+    }
+
 }
 
 public class ServerClass
@@ -171,7 +176,7 @@ public class ServerClass
                     else
                         control_str.Append(",");
                 }
-                
+                //Debug.Log(control_str);
 
                 string newData = control_str.ToString();
                 if (newData != lastData)
