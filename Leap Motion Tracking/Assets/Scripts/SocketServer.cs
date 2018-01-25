@@ -23,10 +23,19 @@ public class SocketServer : MonoBehaviour {
     public ServerInfo serverInfo;
 
     void Start () {
-        ServerClass.Stop();
-        Thread.Sleep(100);
-        ServerClass.Initialize(ServerClass.GetLocalIP(), 7999, serverInfo);
-        ServerClass.Run();
+        if (!ServerClass.Running)
+        {
+            ServerClass.Stop();
+            Thread.Sleep(100);
+            ServerClass.Initialize(ServerClass.GetLocalIP(), 7999, serverInfo);
+            ServerClass.Run();
+        }
+        else
+        {
+            ServerClass.serverInfo = serverInfo;
+            ServerClass.UpdateStatus();
+        }
+        
     }
 
     void OnApplicationQuit()
@@ -36,7 +45,7 @@ public class SocketServer : MonoBehaviour {
 
 }
 
-public class ServerClass
+public class ServerClass : MonoBehaviour
 {
     private static IPAddress localIP;
     private static int port;
@@ -44,7 +53,7 @@ public class ServerClass
     private static Thread serverThread;
     private static Thread listenThread;
 
-    private static ServerInfo serverInfo;
+    public static ServerInfo serverInfo;
 
     private static bool rightHandConnected;
     private static bool leftHandConnected;
@@ -54,6 +63,17 @@ public class ServerClass
         get
         {
             return _running;
+        }
+    }
+
+    private static ServerClass _instance;
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void Initialize()
+    {
+        if (_instance == null)
+        {
+            _instance = new GameObject("ServerClass").AddComponent<ServerClass>();
+            DontDestroyOnLoad(_instance.gameObject);
         }
     }
 
@@ -142,19 +162,19 @@ public class ServerClass
         {
             byte[] incMsg = new byte[1024];
             int length;
-            while ((length = stream.Read(incMsg, 0, incMsg.Length)) == 0); // Wait for message
+            if ((length = stream.Read(incMsg, 0, incMsg.Length)) == 0) ; // Wait for message
             string incoming = Encoding.ASCII.GetString(incMsg, 0, length);
-            if (incoming == "l")
+            if (incoming == "l" || ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString() == "192.168.0.101")
             {
                 Debug.Log("Sending LEFT hand data to client " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
-                fingerData = TouchDetector.touchFingersLeft;
+                
                 isLeftHand = true;
                 leftHandConnected = true;
             }
             else
             {
                 Debug.Log("Sending RIGHT hand data to client " + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
-                fingerData = TouchDetector.touchFingersRight;
+                
                 isLeftHand = false;
                 rightHandConnected = true;
             }
@@ -163,6 +183,15 @@ public class ServerClass
             string lastData = "";
             while (true)
             {
+                if (isLeftHand)
+                {
+                    fingerData = TouchDetector.touchFingersLeft;
+                }
+                else
+                {
+                    fingerData = TouchDetector.touchFingersRight;
+                }
+
                 // Create control string
                 StringBuilder control_str = new StringBuilder();
 
@@ -176,7 +205,7 @@ public class ServerClass
                     else
                         control_str.Append(",");
                 }
-                //Debug.Log(control_str);
+                Debug.Log(control_str);
 
                 string newData = control_str.ToString();
                 if (newData != lastData)
